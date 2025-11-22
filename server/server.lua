@@ -2,19 +2,6 @@ local ESX = exports['es_extended']:getSharedObject()
 local robberyCD = {} -- Cooldown par joueur
 local activeRobberies = {} -- Braquages actifs
 
--- Liste des items lourds (pour la détection de retrait)
-local heavyItems = {
-    'game_console',
-    'game_console_pro',
-    'retro_console',
-    'laptop',
-    'gaming_setup',
-    'television',
-    'microwave',
-    'designer_chair',
-    'travel_bag'
-}
-
 -- Fonction pour vérifier le nombre de policiers
 local function GetPoliceCount()
     local count = 0
@@ -187,53 +174,9 @@ end, false, {help = 'Reset le cooldown de cambriolage d\'un joueur', validate = 
     {name = 'playerId', help = 'ID du joueur', type = 'number'}
 }})
 
--- Hook ox_inventory pour détecter le retrait d'objets lourds
-exports.ox_inventory:registerHook('swapItems', function(payload)
-    local source = payload.source
-    local fromInventory = payload.fromInventory
-    local toInventory = payload.toInventory
-    local fromSlot = payload.fromSlot
-
-    -- Vérifier si un item lourd est retiré de l'inventaire du joueur
-    if fromInventory and type(fromInventory) == 'string' and fromInventory:find('^player:') then
-        local item = fromSlot and fromSlot.name
-
-        -- Vérifier si c'est un item lourd
-        if item then
-            for _, heavyItem in ipairs(heavyItems) do
-                if item == heavyItem then
-                    -- Notifier le client pour retirer l'animation et le prop
-                    TriggerClientEvent('zcambu:removeCarriedObject', source)
-                    break
-                end
-            end
-        end
-    end
-
-    return true
-end, {
-    print = false,
-    itemFilter = heavyItems
-})
-
--- Hook pour détecter quand un item est retiré complètement de l'inventaire
-AddEventHandler('ox_inventory:itemRemoved', function(source, item, count)
-    if not source or not item then return end
-
-    -- Vérifier si c'est un item lourd
-    for _, heavyItem in ipairs(heavyItems) do
-        if item.name == heavyItem then
-            -- Notifier le client pour retirer l'animation et le prop
-            TriggerClientEvent('zcambu:removeCarriedObject', source)
-            break
-        end
-    end
-end)
-
 -- Logs au démarrage
 CreateThread(function()
     Wait(1000)
     print('^2[ZCAMBU]^7 Script de cambriolage démarré')
     print(string.format('^2[ZCAMBU]^7 %d locations chargées', #Config.Locations))
-    print('^2[ZCAMBU]^7 Hooks ox_inventory enregistrés pour les objets lourds')
 end)
