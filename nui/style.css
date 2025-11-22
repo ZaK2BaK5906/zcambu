@@ -11,26 +11,18 @@ body {
 
 .container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    -webkit-transform: translate(-50%, -50%) translateZ(0);
     z-index: 9999;
     animation: fadeIn 0.3s ease-in-out;
     /* Optimisations GPU pour éviter les clignotements */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     perspective: 1000px;
     -webkit-perspective: 1000px;
-    will-change: opacity;
+    will-change: opacity, transform;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -38,21 +30,25 @@ body {
 @keyframes fadeIn {
     from {
         opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9) translateZ(0);
     }
     to {
         opacity: 1;
+        transform: translate(-50%, -50%) scale(1) translateZ(0);
     }
 }
 
 .tablet {
-    width: 90%;
-    max-width: 900px;
+    width: 800px;
+    height: 600px;
     background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(30, 30, 45, 0.98));
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 0 3px rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
     animation: slideUp 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
     /* Optimisations GPU */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -121,7 +117,10 @@ body {
 }
 
 .tablet-body {
-    padding: 30px;
+    padding: 25px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .location-info {
@@ -145,9 +144,9 @@ body {
 
 .robbery-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-    gap: 25px;
-    margin-bottom: 25px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
 .option-card {
@@ -359,6 +358,25 @@ body {
     }
 }
 
+/* Scrollbar custom */
+.tablet-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.tablet-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.tablet-body::-webkit-scrollbar-thumb {
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 10px;
+}
+
+.tablet-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(102, 126, 234, 0.7);
+}
+
 /* Responsive */
 @media (max-width: 900px) {
     .robbery-options {
@@ -366,7 +384,8 @@ body {
     }
 
     .tablet {
-        width: 95%;
+        width: 700px;
+        height: 550px;
     }
 
     .header-title {
@@ -375,5 +394,12 @@ body {
 
     .location-info h2 {
         font-size: 24px;
+    }
+}
+
+@media (max-width: 750px) {
+    .tablet {
+        width: 90vw;
+        height: 70vh;
     }
 }
