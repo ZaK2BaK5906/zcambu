@@ -22,30 +22,6 @@ local function GetPoliceCount()
     return #players
 end
 
--- Callback pour vérifier si le joueur peut voir la zone d'entrée (pas en cooldown)
-ESX.RegisterServerCallback('zcambu:canShowEntryZone', function(source, cb, locationIndex)
-    local xPlayer = ESX.GetPlayerFromId(source)
-
-    if not xPlayer then
-        cb(false)
-        return
-    end
-
-    -- Vérifier si le joueur a un cooldown actif
-    if robberyCD[xPlayer.identifier] and os.time() < robberyCD[xPlayer.identifier] then
-        cb(false)
-        return
-    end
-
-    -- Vérifier si un braquage est déjà actif pour ce joueur
-    if activeRobberies[source] then
-        cb(false)
-        return
-    end
-
-    cb(true)
-end)
-
 -- Callback pour vérifier si le joueur peut commencer un braquage
 ESX.RegisterServerCallback('zcambu:canStartRobbery', function(source, cb, locationIndex, robberyType)
     local xPlayer = ESX.GetPlayerFromId(source)
