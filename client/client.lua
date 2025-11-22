@@ -250,7 +250,21 @@ function AttachHeavyObject(propData)
 
     -- Créer le prop dans les mains
     carryingProp = CreateObject(propHash, 0, 0, 0, true, true, true)
-    AttachEntityToEntity(carryingProp, playerPed, GetPedBoneIndex(playerPed, 60309), 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, true, true, false, true, 1, true)
+
+    -- Attacher le prop à la main (configuration dans config.lua)
+    local attach = Config.PropAttachment
+    AttachEntityToEntity(
+        carryingProp,
+        playerPed,
+        GetPedBoneIndex(playerPed, attach.bone),
+        attach.offset.x,
+        attach.offset.y,
+        attach.offset.z,
+        attach.rotation.pitch,
+        attach.rotation.roll,
+        attach.rotation.yaw,
+        true, true, false, true, 1, true
+    )
 
     -- Charger l'animation de portage
     lib.requestAnimDict(Config.Animations.carry.dict, 5000)
@@ -282,6 +296,39 @@ function AttachHeavyObject(propData)
         end
     end)
 end
+
+-- Fonction pour retirer l'objet porté (appelée quand l'item est déposé/donné/mis dans coffre)
+function RemoveCarriedObject()
+    if not carryingObject then return end
+
+    local playerPed = PlayerPedId()
+
+    -- Détacher et supprimer le prop
+    if carryingProp and DoesEntityExist(carryingProp) then
+        DetachEntity(carryingProp, true, true)
+        DeleteObject(carryingProp)
+    end
+
+    -- Réinitialiser l'état du joueur
+    SetPedMoveRateOverride(playerPed, 1.0)
+    ClearPedTasks(playerPed)
+    ClearPedSecondaryTask(playerPed)
+
+    -- Nettoyer les variables
+    carryingObject = nil
+    carryingProp = nil
+
+    lib.notify({
+        title = 'Objet déposé',
+        description = 'Vous avez déposé l\'objet lourd',
+        type = 'info'
+    })
+end
+
+-- Event pour détecter le retrait d'un objet lourd de l'inventaire
+RegisterNetEvent('zcambu:removeCarriedObject', function()
+    RemoveCarriedObject()
+end)
 
 -- Fonction pour créer la zone de sortie
 function CreateExitZone(locationIndex)

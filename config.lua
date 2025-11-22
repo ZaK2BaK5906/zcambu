@@ -97,6 +97,21 @@ Config.Animations = {
     }
 }
 
+-- Attachement du prop dans les mains (AJUSTABLE)
+Config.PropAttachment = {
+    bone = 60309, -- IK_R_Hand (main droite)
+    offset = {
+        x = 0.05,  -- Devant/Derrière (+ = devant, - = derrière)
+        y = 0.05,  -- Gauche/Droite (+ = droite, - = gauche)
+        z = 0.0    -- Haut/Bas (+ = haut, - = bas)
+    },
+    rotation = {
+        pitch = 0.0,  -- Rotation X
+        roll = 90.0,  -- Rotation Y (90 = tourné de côté)
+        yaw = 0.0     -- Rotation Z
+    }
+}
+
 -- Locations de braquage
 Config.Locations = {
     -- Maison Grove Street
