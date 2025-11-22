@@ -216,9 +216,8 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData, i
         return
     end
 
-    -- Animation de récupération
-    lib.requestAnimDict('pickup_object', 5000)
-    TaskPlayAnim(playerPed, 'pickup_object', 'pickup_low', 8.0, -8.0, 1000, 0, 0, false, false, false)
+    -- Animation de récupération (mechanic4)
+    ExecuteCommand('e mechanic4')
 
     if lib.progressBar({
         duration = 3000,

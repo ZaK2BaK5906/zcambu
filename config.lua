@@ -11,43 +11,43 @@ Config = {}
     et spawnés aux positions définies pour chaque location
 ]]--
 
--- LISTE DES PROPS DISPONIBLES (SANS MARQUES - Objets réalistes de maison)
+-- LISTE DES PROPS DISPONIBLES (100% SANS MARQUES - Objets réalistes de maison)
 Config.AvailableProps = {
     -- OBJETS LÉGERS (pour facile ET difficile) - Petits objets de valeur
     light = {
         {name = 'Smartphone', model = 'rm-phone-1', reward = 'smartphone', amount = {1, 1}},
-        {name = 'Écouteurs Bluetooth', model = 'rm-appleheadset-1', reward = 'bluetooth_earbuds', amount = {1, 1}},
+        {name = 'Écouteurs sans fil', model = 'rm-earbuds', reward = 'bluetooth_earbuds', amount = {1, 1}},
         {name = 'Casquette', model = 'rm-cap-1', reward = 'cap', amount = {1, 1}},
-        {name = 'Chaussures sport', model = 'rm-yeezyslide', reward = 'sport_shoes', amount = {1, 1}},
-        {name = 'Vape', model = 'rm-vape-1', reward = 'vape', amount = {1, 1}},
-        {name = 'Bouteille eau', model = 'rm-fiji-bottle', reward = 'water_bottle', amount = {2, 4}},
+        {name = 'Chaussures sport', model = 'rm-shoes', reward = 'sport_shoes', amount = {1, 1}},
+        {name = 'Cigarette électronique', model = 'rm-vape-1', reward = 'vape', amount = {1, 1}},
+        {name = 'Bouteille eau', model = 'rm-water', reward = 'water_bottle', amount = {2, 4}},
         {name = 'Petite liasse', model = 'rm-cashspread-1', reward = 'black_money', amount = {150, 350}},
         {name = 'Stack de billets', model = 'rm-dollarstack-1', reward = 'black_money', amount = {200, 450}},
         {name = 'Skateboard', model = 'rm-skate-1', reward = 'skateboard', amount = {1, 1}},
-        {name = 'Console portable', model = 'rm-switch', reward = 'handheld_console', amount = {1, 1}},
-        {name = 'Briquet deluxe', model = 'rm-bic-1', reward = 'lighter_deluxe', amount = {1, 1}},
-        {name = 'Télécommande TV', model = 'rm-backwoods-1', reward = 'remote_control', amount = {1, 1}},
+        {name = 'Console portable', model = 'rm-handheld', reward = 'handheld_console', amount = {1, 1}},
+        {name = 'Briquet', model = 'rm-lighter', reward = 'lighter_deluxe', amount = {1, 1}},
+        {name = 'Télécommande', model = 'rm-remote', reward = 'remote_control', amount = {1, 1}},
         {name = 'Clé USB', model = 'rm-usb', reward = 'usb_key', amount = {1, 1}},
-        {name = 'Fausse montre', model = 'rm-watch-generic', reward = 'fake_watch', amount = {1, 1}},
-        {name = 'Tablette tactile', model = 'rm-tablet', reward = 'tablet', amount = {1, 1}},
+        {name = 'Montre', model = 'rm-watch', reward = 'fake_watch', amount = {1, 1}},
+        {name = 'Tablette', model = 'rm-tablet', reward = 'tablet', amount = {1, 1}},
         {name = 'Appareil photo', model = 'rm-camera', reward = 'camera', amount = {1, 1}},
-        {name = 'Manette de jeu', model = 'rm-controller', reward = 'game_controller', amount = {1, 1}},
-        {name = 'Enceinte Bluetooth', model = 'rm-speaker', reward = 'bluetooth_speaker', amount = {1, 1}},
-        {name = 'Chargeur portable', model = 'rm-powerbank', reward = 'powerbank', amount = {1, 1}},
+        {name = 'Manette', model = 'rm-controller', reward = 'game_controller', amount = {1, 1}},
+        {name = 'Enceinte portable', model = 'rm-speaker', reward = 'bluetooth_speaker', amount = {1, 1}},
+        {name = 'Batterie externe', model = 'rm-powerbank', reward = 'powerbank', amount = {1, 1}},
         {name = 'Calculatrice', model = 'rm-calculator', reward = 'calculator', amount = {1, 1}},
     },
 
     -- OBJETS LOURDS (uniquement pour difficile) - Électronique et meubles
     heavy = {
-        {name = 'Console de jeux', model = 'rm-ps5', reward = 'game_console', amount = {1, 1}},
-        {name = 'Console de jeux Pro', model = 'rm-ps4', reward = 'game_console_pro', amount = {1, 1}},
-        {name = 'Console rétro', model = 'rm-xbox', reward = 'retro_console', amount = {1, 1}},
-        {name = 'Ordinateur portable', model = 'rm-mac', reward = 'laptop', amount = {1, 1}},
-        {name = 'Setup Gaming', model = 'rm-screensetup', reward = 'gaming_setup', amount = {1, 1}},
+        {name = 'Console de jeux', model = 'rm-console1', reward = 'game_console', amount = {1, 1}},
+        {name = 'Console de jeux Pro', model = 'rm-console2', reward = 'game_console_pro', amount = {1, 1}},
+        {name = 'Console rétro', model = 'rm-console3', reward = 'retro_console', amount = {1, 1}},
+        {name = 'Ordinateur portable', model = 'rm-laptop', reward = 'laptop', amount = {1, 1}},
+        {name = 'Setup Gaming', model = 'rm-pcsetup', reward = 'gaming_setup', amount = {1, 1}},
         {name = 'Télévision', model = 'rm-tv', reward = 'television', amount = {1, 1}},
         {name = 'Micro-ondes', model = 'rm-microwave', reward = 'microwave', amount = {1, 1}},
-        {name = 'Chaise design', model = 'rm-chair', reward = 'designer_chair', amount = {1, 1}},
-        {name = 'Grand sac voyage', model = 'rm-bag-travel', reward = 'travel_bag', amount = {1, 1}},
+        {name = 'Chaise', model = 'rm-chair', reward = 'designer_chair', amount = {1, 1}},
+        {name = 'Sac de voyage', model = 'rm-bag', reward = 'travel_bag', amount = {1, 1}},
         {name = 'Grosse liasse', model = 'rm-money-pile-1', reward = 'black_money', amount = {800, 1500}},
     }
 }
@@ -117,7 +117,7 @@ Config.Locations = {
     -- Maison Grove Street
     {
         name = 'Maison Grove Street',
-        doorCoords = vector3(-9.35, -1438.51, 31.10),
+        doorCoords = vector3(-14.4758, -1441.9084, 31.1014),
         doorHeading = 180.0,
         blip = {
             sprite = 40,
@@ -127,23 +127,23 @@ Config.Locations = {
         },
         ipl = {
             name = 'FranklinHouse',
-            enter = vector3(-9.35, -1438.51, 31.10),
-            exit = vector3(-14.53, -1440.10, 31.10),
-            interior = vector3(-13.5, -1439.5, 31.1),
-            exitDoorCoords = vector3(-14.53, -1440.10, 31.10) -- Porte intérieure pour sortir
+            enter = vector3(-14.4758, -1441.9084, 31.1014),
+            exit = vector3(-14.4758, -1441.9084, 31.1014),
+            interior = vector3(-14.0463, -1439.5790, 31.1016),
+            exitDoorCoords = vector3(-14.5409, -1440.5847, 31.1016) -- Porte intérieure pour sortir
         },
         -- POSITIONS DE SPAWN (10 objets max)
         spawnPositions = {
-            vector3(-11.5318, -1431.8981, 31.1168),
-            vector3(-12.1142, -1433.9563, 31.1018),
-            vector3(-11.3585, -1429.7806, 31.1015),
-            vector3(-13.1412, -1428.7836, 31.1015),
-            vector3(-17.6738, -1439.6672, 31.1016),
-            vector3(-10.5, -1430.5, 31.1),
-            vector3(-14.2, -1436.8, 31.1),
-            vector3(-15.5, -1438.2, 31.1),
-            vector3(-9.5, -1432.8, 31.1),
-            vector3(-19.2, -1438.5, 31.1)
+            vector3(-9.5895, -1441.5662, 31.1016),
+            vector3(-12.4788, -1436.9725, 31.1016),
+            vector3(-9.8434, -1433.6885, 31.1022),
+            vector3(-10.1925, -1430.0131, 31.1015),
+            vector3(-17.0641, -1430.4825, 31.1015),
+            vector3(-16.7747, -1434.9037, 31.1016),
+            vector3(-18.3043, -1432.1866, 31.1016),
+            vector3(-17.1074, -1437.0227, 31.1016),
+            vector3(-18.4372, -1438.6531, 31.1016),
+            vector3(-16.9777, -1440.9784, 31.1016)
         },
         requiredItem = {
             easy = 'lockpick',
