@@ -11,44 +11,44 @@ Config = {}
     et spawnés aux positions définies pour chaque location
 ]]--
 
--- LISTE DES PROPS DISPONIBLES (configurables)
+-- LISTE DES PROPS DISPONIBLES (Pack Ultimate Props - Maisons de luxe)
 Config.AvailableProps = {
-    -- OBJETS LÉGERS (pour facile ET difficile)
+    -- OBJETS LÉGERS (pour facile ET difficile) - Petits objets de valeur
     light = {
-        {name = 'Petite liasse', model = 'prop_cash_pile_02', reward = 'black_money', amount = {120, 280}},
-        {name = 'Chaîne en toc', model = 'prop_jewel_02a', reward = 'silver_chain', amount = {1, 1}},
-        {name = 'Clé USB cryptée', model = 'prop_usb_drive_01', reward = 'usb_crypto', amount = {1, 1}},
-        {name = 'Montre contrefaite', model = 'p_watch_03', reward = 'fake_watch', amount = {1, 1}},
-        {name = 'Pochette billets', model = 'prop_money_bag_01', reward = 'dirty_cash_small', amount = {180, 250}},
-        {name = 'Bracelet femme', model = 'prop_jewel_04b', reward = 'bracelet', amount = {1, 2}},
-        {name = 'Oreillette volée', model = 'prop_cs_hand_radio', reward = 'earpiece', amount = {1, 1}},
-        {name = 'Mini-tablette', model = 'prop_tablet_02', reward = 'tablet_mini', amount = {1, 1}},
-        {name = 'Carte crypto', model = 'prop_credit_card_01', reward = 'crypto_card', amount = {1, 1}},
-        {name = 'Porte-monnaie', model = 'prop_ld_wallet_01', reward = 'wallet', amount = {50, 120}},
-        {name = 'Sacoche légère', model = 'prop_cs_shopping_bag', reward = 'light_bag', amount = {1, 2}},
-        {name = 'Grosse liasse', model = 'prop_cash_case_01', reward = 'black_money', amount = {380, 700}},
-        {name = 'Carte serveur', model = 'prop_raspberry_pi', reward = 'server_card', amount = {1, 1}},
-        {name = 'Passeport volé', model = 'prop_ld_passcard_01', reward = 'fake_passport', amount = {1, 1}},
-        {name = 'Tablette pro', model = 'prop_tablet_01', reward = 'tablet_pro', amount = {1, 1}},
-        {name = 'Pièces anciennes', model = 'prop_coins_01', reward = 'old_coins', amount = {2, 5}},
-        {name = 'Lingot argent', model = 'prop_ingot_01', reward = 'silver_bar', amount = {1, 2}},
-        {name = 'Malette documents', model = 'prop_ld_case_01', reward = 'secret_docs', amount = {1, 1}},
-        {name = 'Clé secrète', model = 'prop_cs_key_01', reward = 'diamond_key', amount = {1, 1}},
-        {name = 'Disque dur chiffré', model = 'prop_cs_hard_drive', reward = 'encrypted_hdd', amount = {1, 1}},
+        {name = 'Smartphone', model = 'rm-phone-1', reward = 'smartphone', amount = {1, 1}},
+        {name = 'AirPods', model = 'rm-appleheadset-1', reward = 'apple_headset', amount = {1, 1}},
+        {name = 'Casquette designer', model = 'rm-cap-1', reward = 'designer_cap', amount = {1, 1}},
+        {name = 'Yeezy Slide', model = 'rm-yeezyslide', reward = 'yeezy_slide', amount = {1, 1}},
+        {name = 'Boîte Nike', model = 'rm-nikebox-1', reward = 'nike_shoes', amount = {1, 1}},
+        {name = 'Boîte Versace', model = 'rm-versace-box-1', reward = 'versace_box', amount = {1, 1}},
+        {name = 'Boîte Bape', model = 'rm-bape-box', reward = 'bape_box', amount = {1, 1}},
+        {name = 'Petit sac LV', model = 'rm-lvbag-1', reward = 'lv_bag_small', amount = {1, 1}},
+        {name = 'Vape', model = 'rm-vape-1', reward = 'vape', amount = {1, 2}},
+        {name = 'Fiji Water', model = 'rm-fiji-bottle', reward = 'fiji_water', amount = {2, 4}},
+        {name = 'Prime Drink', model = 'rm-prime-1', reward = 'prime_drink', amount = {1, 3}},
+        {name = 'Monster Energy', model = 'rm-monster', reward = 'monster_energy', amount = {1, 2}},
+        {name = 'Petite liasse', model = 'rm-cashspread-1', reward = 'black_money', amount = {150, 350}},
+        {name = 'Stack de billets', model = 'rm-dollarstack-1', reward = 'black_money', amount = {200, 450}},
+        {name = 'Skateboard', model = 'rm-skate-1', reward = 'skateboard', amount = {1, 1}},
+        {name = 'Figurine Kaws', model = 'rm-kaws-1', reward = 'kaws_figure_small', amount = {1, 1}},
+        {name = 'Nintendo Switch', model = 'rm-switch', reward = 'nintendo_switch', amount = {1, 1}},
+        {name = 'Briquet luxe', model = 'rm-bic-1', reward = 'lighter', amount = {1, 3}},
+        {name = 'Sac de bonbons', model = 'rm-candybag', reward = 'candy_bag', amount = {1, 2}},
+        {name = 'Télécommande', model = 'rm-backwoods-1', reward = 'remote_control', amount = {1, 1}},
     },
 
-    -- OBJETS LOURDS (uniquement pour difficile)
+    -- OBJETS LOURDS (uniquement pour difficile) - Électronique et objets de valeur
     heavy = {
-        {name = 'Coffre miniature', model = 'prop_ld_int_safe_01', reward = 'mini_safe', amount = {1, 1}},
-        {name = 'Statue bronze', model = 'prop_bronze_horse', reward = 'bronze_statue', amount = {1, 1}},
-        {name = 'TV Connecté', model = 'prop_tv_flat_01', reward = 'smart_tv', amount = {1, 1}},
-        {name = 'Tableau ancien', model = 'prop_painting_01', reward = 'old_painting', amount = {1, 1}},
-        {name = 'Canapé', model = 'prop_couch_01', reward = 'luxury_couch', amount = {1, 1}},
-        {name = 'Box électronique', model = 'prop_elecbox_12', reward = 'tech_box', amount = {1, 1}},
-        {name = 'Console de jeux', model = 'prop_arcade_01', reward = 'gaming_console', amount = {1, 1}},
-        {name = 'Ordinateur Gamer', model = 'prop_dyn_pc_02', reward = 'gaming_pc', amount = {1, 1}},
-        {name = 'Sac militaire', model = 'prop_cs_heist_bag_01', reward = 'military_bag', amount = {1, 1}},
-        {name = 'Caisse lingots', model = 'hei_prop_heist_cash_pile', reward = 'gold_bar_box', amount = {1, 1}},
+        {name = 'PlayStation 5', model = 'rm-ps5', reward = 'ps5_console', amount = {1, 1}},
+        {name = 'PlayStation 4', model = 'rm-ps4', reward = 'ps4_console', amount = {1, 1}},
+        {name = 'Xbox', model = 'rm-xbox', reward = 'xbox_console', amount = {1, 1}},
+        {name = 'MacBook', model = 'rm-mac', reward = 'macbook', amount = {1, 1}},
+        {name = 'Setup Gaming', model = 'rm-screensetup', reward = 'gaming_setup', amount = {1, 1}},
+        {name = 'Grand sac LV', model = 'rm-lvbag-13', reward = 'lv_bag_large', amount = {1, 1}},
+        {name = 'Sac Gucci', model = 'rm-gucci-bag', reward = 'gucci_bag', amount = {1, 1}},
+        {name = 'Grosse liasse', model = 'rm-money-pile-1', reward = 'black_money', amount = {800, 1500}},
+        {name = 'Statue Kaws', model = 'rm-kaws-2', reward = 'kaws_statue', amount = {1, 1}},
+        {name = 'Tapis designer', model = 'rm-bape-rug1', reward = 'designer_rug', amount = {1, 1}},
     }
 }
 
