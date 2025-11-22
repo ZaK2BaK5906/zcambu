@@ -1,54 +1,51 @@
-# ZCambu - Script de Cambriolage pour FiveM
+# ZCAMBU - Script de Cambriolage FiveM
 
-Script de cambriolage avancé avec interface NUI moderne, système d'objets lourds/légers et téléportation dans les instances.
-
-## Fonctionnalités
-
-- **Interface NUI moderne** avec effet de blur pour voir le jeu en arrière-plan
-- **2 types de braquage** : Facile (objets légers) et Difficile (objets lourds + légers)
-- **Système d'objets lourds** : Le joueur doit porter les objets lourds, marche plus lentement et doit les déposer dans un coffre
-- **Téléportation dans les instances/IPLs** avec animation cinématique
-- **Timer de 3 minutes** pour chaque braquage
-- **Système de cooldown** entre les braquages
-- **Full OX Target** pour toutes les interactions
-- **Full OX Inventory** pour la gestion des items
-- **Multiple locations** préconfigurées
+Script de cambriolage avec interface NUI tablette, système d'objets légers/lourds, et téléportation vers des instances.
 
 ## Dépendances
 
-### Obligatoires (Gratuites)
-
-1. **ESX Legacy** - [Télécharger](https://github.com/esx-framework/esx_core)
-2. **ox_lib** - [Télécharger](https://github.com/overextended/ox_lib)
-3. **ox_target** - [Télécharger](https://github.com/overextended/ox_target)
-4. **ox_inventory** - [Télécharger](https://github.com/overextended/ox_inventory)
-5. **oxmysql** - [Télécharger](https://github.com/overextended/oxmysql)
+- **ESX Legacy** (es_extended)
+- **ox_lib**
+- **ox_target**
+- **ox_inventory**
 
 ## Installation
 
-### 1. Télécharger et installer les dépendances
+1. Placez le script dans votre dossier `resources`
+2. Ajoutez `ensure zcambu` dans votre `server.cfg`
+3. Ajoutez les items ci-dessous dans votre base de données `ox_inventory`
+4. Redémarrez le serveur
 
-Assurez-vous que toutes les dépendances ci-dessus sont installées et démarrées avant ce script.
+## Configuration
 
-### 2. Installer le script
+Modifiez `config.lua` pour personnaliser :
+- Les props disponibles (légers et lourds)
+- Les locations de braquage
+- Les récompenses
+- Le timer et cooldown
+- Le nombre de policiers requis
 
-1. Placez le dossier `zcambu` dans votre répertoire `resources/[esx]` ou `resources/[custom]`
-2. Ajoutez `ensure zcambu` dans votre `server.cfg` **APRÈS** les dépendances
+## Fonctionnalités
 
-```cfg
-# Dépendances
-ensure ox_lib
-ensure ox_target
-ensure ox_inventory
-ensure es_extended
+### Système de Spawn Aléatoire
+- **Braquage FACILE** : 10 objets légers aléatoires
+- **Braquage DIFFICILE** : 4 objets légers + 6 objets lourds aléatoires
 
-# Script de cambriolage
-ensure zcambu
-```
+### Items Requis
+- **Braquage facile** : `lockpick` (crochet)
+- **Braquage difficile** : `lockpick_advanced` (crochet amélioré)
 
-### 3. Ajouter les items dans ox_inventory
+### Objets Lourds
+- Le joueur porte l'objet avec animation
+- Impossibilité d'utiliser des armes ou sprinter
+- L'objet va directement dans l'inventaire
+- Le joueur doit le stocker lui-même dans un coffre de véhicule
 
-Ajoutez les items suivants dans votre fichier `ox_inventory/data/items.lua` :
+## Items à ajouter dans ox_inventory
+
+### Items Requis pour Braquage
+
+Ajoutez ces items dans `ox_inventory/data/items.lua` :
 
 ```lua
 -- Items requis pour le braquage
@@ -67,180 +64,313 @@ Ajoutez les items suivants dans votre fichier `ox_inventory/data/items.lua` :
     close = true,
     description = 'Permet de crocheter les portes renforcées (braquage difficile)'
 },
+```
 
--- Récompenses (objets légers)
-['jewel'] = {
-    label = 'Bijoux',
+### Items Légers (Braquage Facile ET Difficile)
+
+```lua
+-- Bijoux et accessoires
+['silver_chain'] = {
+    label = 'Chaîne en toc',
     weight = 100,
     stack = true,
     close = true,
-    description = 'Des bijoux volés'
+    description = 'Une chaîne de faible qualité'
 },
 
-['luxury_watch'] = {
-    label = 'Montre de Luxe',
+['bracelet'] = {
+    label = 'Bracelet femme',
+    weight = 80,
+    stack = true,
+    close = true,
+    description = 'Un bracelet pour femme'
+},
+
+['old_coins'] = {
+    label = 'Pièces anciennes',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = 'Des pièces de collection anciennes'
+},
+
+['silver_bar'] = {
+    label = 'Lingot argent',
+    weight = 500,
+    stack = true,
+    close = true,
+    description = 'Un lingot d\'argent'
+},
+
+['fake_watch'] = {
+    label = 'Montre contrefaite',
+    weight = 120,
+    stack = true,
+    close = true,
+    description = 'Une montre de contrefaçon'
+},
+
+-- Électronique
+['usb_crypto'] = {
+    label = 'Clé USB cryptée',
     weight = 50,
     stack = true,
     close = true,
-    description = 'Une montre de luxe'
+    description = 'Une clé USB avec des données cryptées'
 },
 
-['phone'] = {
-    label = 'Smartphone',
+['earpiece'] = {
+    label = 'Oreillette volée',
+    weight = 60,
+    stack = true,
+    close = true,
+    description = 'Une oreillette sans fil'
+},
+
+['tablet_mini'] = {
+    label = 'Mini-tablette',
+    weight = 300,
+    stack = true,
+    close = true,
+    description = 'Une petite tablette tactile'
+},
+
+['tablet_pro'] = {
+    label = 'Tablette pro',
+    weight = 400,
+    stack = true,
+    close = true,
+    description = 'Une tablette professionnelle haut de gamme'
+},
+
+['server_card'] = {
+    label = 'Carte serveur',
+    weight = 80,
+    stack = true,
+    close = true,
+    description = 'Une carte réseau de serveur'
+},
+
+['encrypted_hdd'] = {
+    label = 'Disque dur chiffré',
+    weight = 250,
+    stack = true,
+    close = true,
+    description = 'Un disque dur avec chiffrement'
+},
+
+-- Documents et cartes
+['crypto_card'] = {
+    label = 'Carte crypto',
+    weight = 10,
+    stack = true,
+    close = true,
+    description = 'Une carte de crypto-monnaie'
+},
+
+['fake_passport'] = {
+    label = 'Passeport volé',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = 'Un passeport falsifié'
+},
+
+['secret_docs'] = {
+    label = 'Malette documents',
     weight = 200,
     stack = true,
     close = true,
-    description = 'Un smartphone dernier cri'
+    description = 'Une malette contenant des documents secrets'
 },
 
-['laptop'] = {
-    label = 'Ordinateur Portable',
-    weight = 1000,
+['diamond_key'] = {
+    label = 'Clé secrète',
+    weight = 30,
     stack = true,
     close = true,
-    description = 'Un laptop haut de gamme'
+    description = 'Une clé mystérieuse'
 },
 
--- Récompenses (objets lourds)
-['painting'] = {
-    label = 'Tableau de Maître',
+-- Argent liquide et sacs
+['dirty_cash_small'] = {
+    label = 'Pochette billets',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = 'Une pochette contenant des billets'
+},
+
+['wallet'] = {
+    label = 'Porte-monnaie',
+    weight = 50,
+    stack = true,
+    close = true,
+    description = 'Un porte-monnaie avec de l\'argent'
+},
+
+['light_bag'] = {
+    label = 'Sacoche légère',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = 'Une sacoche de transport légère'
+},
+```
+
+### Items Lourds (Braquage Difficile uniquement)
+
+```lua
+-- Objets lourds
+['mini_safe'] = {
+    label = 'Coffre miniature',
     weight = 5000,
     stack = false,
     close = true,
-    description = 'Un tableau de grande valeur'
+    description = 'Un petit coffre-fort portable'
 },
 
-['gold_bar'] = {
-    label = 'Lingot d\'Or',
-    weight = 8000,
-    stack = true,
-    close = true,
-    description = 'Un lingot d\'or pur'
-},
-
-['diamond'] = {
-    label = 'Diamant',
-    weight = 100,
-    stack = true,
-    close = true,
-    description = 'Un diamant précieux'
-},
-
-['antique_sculpture'] = {
-    label = 'Sculpture Antique',
-    weight = 10000,
+['bronze_statue'] = {
+    label = 'Statue bronze',
+    weight = 4000,
     stack = false,
     close = true,
-    description = 'Une sculpture antique de grande valeur'
+    description = 'Une statue en bronze de valeur'
 },
 
-['rare_painting'] = {
-    label = 'Tableau Rare',
+['smart_tv'] = {
+    label = 'TV Connecté',
+    weight = 6000,
+    stack = false,
+    close = true,
+    description = 'Une télévision connectée haut de gamme'
+},
+
+['old_painting'] = {
+    label = 'Tableau ancien',
+    weight = 3000,
+    stack = false,
+    close = true,
+    description = 'Un tableau de maître ancien'
+},
+
+['luxury_couch'] = {
+    label = 'Canapé',
+    weight = 8000,
+    stack = false,
+    close = true,
+    description = 'Un canapé de luxe'
+},
+
+['tech_box'] = {
+    label = 'Box électronique',
+    weight = 4500,
+    stack = false,
+    close = true,
+    description = 'Une box électronique sophistiquée'
+},
+
+['gaming_console'] = {
+    label = 'Console de jeux',
+    weight = 2500,
+    stack = false,
+    close = true,
+    description = 'Une console de jeux dernière génération'
+},
+
+['gaming_pc'] = {
+    label = 'Ordinateur Gamer',
     weight = 7000,
     stack = false,
     close = true,
-    description = 'Un tableau rare et recherché'
+    description = 'Un PC de gaming haut de gamme'
 },
 
-['tv_4k'] = {
-    label = 'TV 4K',
-    weight = 12000,
+['military_bag'] = {
+    label = 'Sac militaire',
+    weight = 3500,
     stack = false,
     close = true,
-    description = 'Une télévision 4K haut de gamme'
+    description = 'Un sac militaire tactique'
+},
+
+['gold_bar_box'] = {
+    label = 'Caisse lingots',
+    weight = 10000,
+    stack = false,
+    close = true,
+    description = 'Une caisse contenant des lingots d\'or'
 },
 ```
 
-### 4. IPLs utilisés (Déjà intégrés dans GTA V)
+## Liste Complète des Props
 
-Les IPLs suivants sont utilisés par le script et sont **GRATUITS** (natifs dans GTA V) :
+### Props Légers (20 items)
+1. **Petite liasse** - `prop_cash_pile_02` → black_money (120-280$)
+2. **Chaîne en toc** - `prop_jewel_02a` → silver_chain
+3. **Clé USB cryptée** - `prop_usb_drive_01` → usb_crypto
+4. **Montre contrefaite** - `p_watch_03` → fake_watch
+5. **Pochette billets** - `prop_money_bag_01` → dirty_cash_small (180-250$)
+6. **Bracelet femme** - `prop_jewel_04b` → bracelet
+7. **Oreillette volée** - `prop_cs_hand_radio` → earpiece
+8. **Mini-tablette** - `prop_tablet_02` → tablet_mini
+9. **Carte crypto** - `prop_credit_card_01` → crypto_card
+10. **Porte-monnaie** - `prop_ld_wallet_01` → wallet (50-120$)
+11. **Sacoche légère** - `prop_cs_shopping_bag` → light_bag
+12. **Grosse liasse** - `prop_cash_case_01` → black_money (380-700$)
+13. **Carte serveur** - `prop_raspberry_pi` → server_card
+14. **Passeport volé** - `prop_ld_passcard_01` → fake_passport
+15. **Tablette pro** - `prop_tablet_01` → tablet_pro
+16. **Pièces anciennes** - `prop_coins_01` → old_coins
+17. **Lingot argent** - `prop_ingot_01` → silver_bar
+18. **Malette documents** - `prop_ld_case_01` → secret_docs
+19. **Clé secrète** - `prop_cs_key_01` → diamond_key
+20. **Disque dur chiffré** - `prop_cs_hard_drive` → encrypted_hdd
 
-- **Franklin's House** (Grove Street)
-- **Vinewood Hills House**
-- **Eclipse Towers Apartment**
+### Props Lourds (10 items)
+1. **Coffre miniature** - `prop_ld_int_safe_01` → mini_safe
+2. **Statue bronze** - `prop_bronze_horse` → bronze_statue
+3. **TV Connecté** - `prop_tv_flat_01` → smart_tv
+4. **Tableau ancien** - `prop_painting_01` → old_painting
+5. **Canapé** - `prop_couch_01` → luxury_couch
+6. **Box électronique** - `prop_elecbox_12` → tech_box
+7. **Console de jeux** - `prop_arcade_01` → gaming_console
+8. **Ordinateur Gamer** - `prop_dyn_pc_02` → gaming_pc
+9. **Sac militaire** - `prop_cs_heist_bag_01` → military_bag
+10. **Caisse lingots** - `hei_prop_heist_cash_pile` → gold_bar_box
 
-Aucune dépendance supplémentaire n'est requise pour les IPLs.
+## Locations
 
-### 5. Configuration
+### 1. Maison Grove Street
+- Porte : `-9.35, -1438.51, 31.10`
+- Intérieur : Franklin House IPL
+- 10 positions de spawn
 
-Modifiez le fichier `config.lua` selon vos besoins :
+### 2. Villa Vinewood
+- Porte : `-174.35, 502.66, 137.42`
+- Intérieur : Vinewood House IPL
+- 10 positions de spawn
 
-```lua
-Config.RobberyTimer = 180 -- Durée du braquage (secondes)
-Config.CooldownTime = 1800 -- Cooldown entre braquages (secondes)
-Config.MinPoliceOnline = 0 -- Nombre minimum de policiers
-```
+### 3. Appartement Eclipse
+- Porte : `-773.41, 312.45, 85.70`
+- Intérieur : Eclipse Towers IPL
+- 10 positions de spawn
 
-## Utilisation
+## Paramètres
 
-### Pour les joueurs
+- **Timer de braquage** : 3 minutes (180 secondes)
+- **Cooldown** : 30 minutes (1800 secondes)
+- **Policiers minimum requis** : 0 (configurable)
+- **Job police** : `police`
 
-1. **Trouver une location** : Cherchez les blips sur la carte (icône de masque rouge)
-2. **Approchez-vous de la porte** : Utilisez ox_target (œil) pour interagir
-3. **Choisir le type de braquage** :
-   - **Facile** : Nécessite un crochet, objets légers uniquement
-   - **Difficile** : Nécessite un crochet amélioré, objets lourds et légers
-4. **Collecter les objets** dans les 3 minutes :
-   - **Objets légers** : Stockés directement dans l'inventaire
-   - **Objets lourds** : Doivent être portés et déposés dans un coffre de véhicule
-5. **Sortir de l'instance** avant la fin du timer
+## Commandes Admin
 
-### Commandes
-
-- `/deposer` : Déposer un objet lourd dans le coffre du véhicule proche
-- `/resetcooldown [player_id]` : (Admin) Reset le cooldown d'un joueur
-
-## Ajouter des locations
-
-Modifiez le fichier `config.lua` et ajoutez une nouvelle entrée dans `Config.Locations` :
-
-```lua
-{
-    name = 'Nom de la location',
-    doorCoords = vector3(x, y, z),
-    doorHeading = 180.0,
-    blip = {
-        sprite = 40,
-        color = 1,
-        scale = 0.8,
-        label = 'Maison à cambrioler'
-    },
-    ipl = {
-        name = 'NomIPL',
-        enter = vector3(x, y, z),
-        exit = vector3(x, y, z),
-        interior = vector3(x, y, z)
-    },
-    props = {
-        easy = { -- Props pour le mode facile
-            {name = 'Nom', model = 'prop_model', coords = vector3(x, y, z), reward = 'item_name', amount = {min, max}, heavy = false}
-        },
-        hard = { -- Props pour le mode difficile
-            -- Mêmes props que easy + objets lourds
-        }
-    }
-}
-```
-
-## Système d'objets lourds
-
-Les objets marqués comme `heavy = true` :
-- Doivent être portés en main (visible sur le personnage)
-- Ralentissent la vitesse de marche du joueur
-- Doivent être déposés dans le coffre d'un véhicule
-- Ne peuvent pas être stockés directement dans l'inventaire
-- Le joueur ne peut porter qu'un objet lourd à la fois
+- `/resetcooldown [player_id]` - Reset le cooldown de cambriolage d'un joueur
 
 ## Support
 
-Pour toute question ou bug, ouvrez une issue sur GitHub.
+Pour toute question ou problème, ouvrez une issue sur GitHub.
 
 ## Crédits
 
-- Développé par ZaK2BaK5906
-- Utilise ox_lib, ox_target, ox_inventory
-- Compatible ESX Legacy
-
-## Licence
-
-Ce script est fourni tel quel. Libre d'utilisation et de modification.
+Script développé pour FiveM avec ESX Legacy.

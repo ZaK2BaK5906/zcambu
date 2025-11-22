@@ -3,23 +3,66 @@ Config = {}
 --[[
     PROPS DISPONIBLES (100% testés et fonctionnels)
 
-    Props validés qui marchent :
-    - prop_cs_heist_bag_01     - Sac de braquage
-    - hei_prop_heist_cash_pile - Pile d'argent
-    - prop_cs_tablet_01        - Tablette
+    SYSTÈME DE SPAWN ALÉATOIRE :
+    - Braquage FACILE : 10 objets légers aléatoires
+    - Braquage DIFFICILE : 4 objets légers + 6 objets lourds aléatoires
 
-    OBJETS LOURDS :
-    - Le joueur porte l'objet avec animation
-    - L'objet est ajouté à l'inventaire
-    - Le joueur NE PEUT RIEN faire d'autre (pas d'arme, pas courir)
-    - Il doit le mettre dans son coffre de véhicule LUI-MÊME via ox_inventory
-    - Il peut quand même sortir de l'instance (E)
-
-    CONFIGURATION :
-    - Braquage facile : 15 objets
-    - Braquage difficile : 20 objets (dont 8 lourds)
-    - Tous les objets sont configurables ci-dessous
+    Les props sont choisis aléatoirement dans la liste ci-dessous
+    et spawnés aux positions définies pour chaque location
 ]]--
+
+-- LISTE DES PROPS DISPONIBLES (configurables)
+Config.AvailableProps = {
+    -- OBJETS LÉGERS (pour facile ET difficile)
+    light = {
+        {name = 'Petite liasse', model = 'prop_cash_pile_02', reward = 'black_money', amount = {120, 280}},
+        {name = 'Chaîne en toc', model = 'prop_jewel_02a', reward = 'silver_chain', amount = {1, 1}},
+        {name = 'Clé USB cryptée', model = 'prop_usb_drive_01', reward = 'usb_crypto', amount = {1, 1}},
+        {name = 'Montre contrefaite', model = 'p_watch_03', reward = 'fake_watch', amount = {1, 1}},
+        {name = 'Pochette billets', model = 'prop_money_bag_01', reward = 'dirty_cash_small', amount = {180, 250}},
+        {name = 'Bracelet femme', model = 'prop_jewel_04b', reward = 'bracelet', amount = {1, 2}},
+        {name = 'Oreillette volée', model = 'prop_cs_hand_radio', reward = 'earpiece', amount = {1, 1}},
+        {name = 'Mini-tablette', model = 'prop_tablet_02', reward = 'tablet_mini', amount = {1, 1}},
+        {name = 'Carte crypto', model = 'prop_credit_card_01', reward = 'crypto_card', amount = {1, 1}},
+        {name = 'Porte-monnaie', model = 'prop_ld_wallet_01', reward = 'wallet', amount = {50, 120}},
+        {name = 'Sacoche légère', model = 'prop_cs_shopping_bag', reward = 'light_bag', amount = {1, 2}},
+        {name = 'Grosse liasse', model = 'prop_cash_case_01', reward = 'black_money', amount = {380, 700}},
+        {name = 'Carte serveur', model = 'prop_raspberry_pi', reward = 'server_card', amount = {1, 1}},
+        {name = 'Passeport volé', model = 'prop_ld_passcard_01', reward = 'fake_passport', amount = {1, 1}},
+        {name = 'Tablette pro', model = 'prop_tablet_01', reward = 'tablet_pro', amount = {1, 1}},
+        {name = 'Pièces anciennes', model = 'prop_coins_01', reward = 'old_coins', amount = {2, 5}},
+        {name = 'Lingot argent', model = 'prop_ingot_01', reward = 'silver_bar', amount = {1, 2}},
+        {name = 'Malette documents', model = 'prop_ld_case_01', reward = 'secret_docs', amount = {1, 1}},
+        {name = 'Clé secrète', model = 'prop_cs_key_01', reward = 'diamond_key', amount = {1, 1}},
+        {name = 'Disque dur chiffré', model = 'prop_cs_hard_drive', reward = 'encrypted_hdd', amount = {1, 1}},
+    },
+
+    -- OBJETS LOURDS (uniquement pour difficile)
+    heavy = {
+        {name = 'Coffre miniature', model = 'prop_ld_int_safe_01', reward = 'mini_safe', amount = {1, 1}},
+        {name = 'Statue bronze', model = 'prop_bronze_horse', reward = 'bronze_statue', amount = {1, 1}},
+        {name = 'TV Connecté', model = 'prop_tv_flat_01', reward = 'smart_tv', amount = {1, 1}},
+        {name = 'Tableau ancien', model = 'prop_painting_01', reward = 'old_painting', amount = {1, 1}},
+        {name = 'Canapé', model = 'prop_couch_01', reward = 'luxury_couch', amount = {1, 1}},
+        {name = 'Box électronique', model = 'prop_elecbox_12', reward = 'tech_box', amount = {1, 1}},
+        {name = 'Console de jeux', model = 'prop_arcade_01', reward = 'gaming_console', amount = {1, 1}},
+        {name = 'Ordinateur Gamer', model = 'prop_dyn_pc_02', reward = 'gaming_pc', amount = {1, 1}},
+        {name = 'Sac militaire', model = 'prop_cs_heist_bag_01', reward = 'military_bag', amount = {1, 1}},
+        {name = 'Caisse lingots', model = 'hei_prop_heist_cash_pile', reward = 'gold_bar_box', amount = {1, 1}},
+    }
+}
+
+-- Nombre d'objets par type de braquage
+Config.PropsCount = {
+    easy = {
+        light = 10, -- 10 objets légers
+        heavy = 0   -- 0 objets lourds
+    },
+    hard = {
+        light = 4,  -- 4 objets légers
+        heavy = 6   -- 6 objets lourds
+    }
+}
 
 -- Paramètres généraux
 Config.Debug = false
@@ -73,50 +116,18 @@ Config.Locations = {
             exit = vector3(-14.53, -1440.10, 31.10),
             interior = vector3(-13.5, -1439.5, 31.1)
         },
-        props = {
-            -- BRAQUAGE FACILE : 15 objets légers
-            easy = {
-                {name = 'Argent liquide 1', model = 'hei_prop_heist_cash_pile', coords = vector3(-11.5318, -1431.8981, 31.1168), reward = 'black_money', amount = {200, 400}, heavy = false},
-                {name = 'Argent liquide 2', model = 'hei_prop_heist_cash_pile', coords = vector3(-12.1142, -1433.9563, 31.1018), reward = 'black_money', amount = {200, 400}, heavy = false},
-                {name = 'Argent liquide 3', model = 'hei_prop_heist_cash_pile', coords = vector3(-11.3585, -1429.7806, 31.1015), reward = 'black_money', amount = {200, 400}, heavy = false},
-                {name = 'Argent liquide 4', model = 'hei_prop_heist_cash_pile', coords = vector3(-13.1412, -1428.7836, 31.1015), reward = 'black_money', amount = {200, 400}, heavy = false},
-                {name = 'Argent liquide 5', model = 'hei_prop_heist_cash_pile', coords = vector3(-17.6738, -1439.6672, 31.1016), reward = 'black_money', amount = {200, 400}, heavy = false},
-                {name = 'Tablette 1', model = 'prop_cs_tablet_01', coords = vector3(-10.5, -1430.5, 31.1), reward = 'laptop', amount = {1, 1}, heavy = false},
-                {name = 'Tablette 2', model = 'prop_cs_tablet_01', coords = vector3(-11.8, -1432.2, 31.1), reward = 'phone', amount = {1, 2}, heavy = false},
-                {name = 'Tablette 3', model = 'prop_cs_tablet_01', coords = vector3(-13.5, -1434.5, 31.1), reward = 'phone', amount = {1, 2}, heavy = false},
-                {name = 'Sac 1', model = 'prop_cs_heist_bag_01', coords = vector3(-14.2, -1436.8, 31.1), reward = 'jewel', amount = {3, 6}, heavy = false},
-                {name = 'Sac 2', model = 'prop_cs_heist_bag_01', coords = vector3(-15.5, -1438.2, 31.1), reward = 'jewel', amount = {3, 6}, heavy = false},
-                {name = 'Sac 3', model = 'prop_cs_heist_bag_01', coords = vector3(-16.8, -1437.5, 31.1), reward = 'jewel', amount = {3, 6}, heavy = false},
-                {name = 'Sac 4', model = 'prop_cs_heist_bag_01', coords = vector3(-18.1, -1436.3, 31.1), reward = 'jewel', amount = {3, 6}, heavy = false},
-                {name = 'Sac 5', model = 'prop_cs_heist_bag_01', coords = vector3(-12.5, -1435.7, 31.1), reward = 'jewel', amount = {3, 6}, heavy = false},
-                {name = 'Sac 6', model = 'prop_cs_heist_bag_01', coords = vector3(-10.8, -1434.3, 31.1), reward = 'diamond', amount = {1, 3}, heavy = false},
-                {name = 'Sac 7', model = 'prop_cs_heist_bag_01', coords = vector3(-9.5, -1432.8, 31.1), reward = 'diamond', amount = {1, 3}, heavy = false}
-            },
-            -- BRAQUAGE DIFFICILE : 20 objets (12 légers + 8 lourds)
-            hard = {
-                -- 12 objets légers
-                {name = 'Argent 1', model = 'hei_prop_heist_cash_pile', coords = vector3(-11.5318, -1431.8981, 31.1168), reward = 'black_money', amount = {300, 600}, heavy = false},
-                {name = 'Argent 2', model = 'hei_prop_heist_cash_pile', coords = vector3(-12.1142, -1433.9563, 31.1018), reward = 'black_money', amount = {300, 600}, heavy = false},
-                {name = 'Argent 3', model = 'hei_prop_heist_cash_pile', coords = vector3(-11.3585, -1429.7806, 31.1015), reward = 'black_money', amount = {300, 600}, heavy = false},
-                {name = 'Tablette 1', model = 'prop_cs_tablet_01', coords = vector3(-10.5, -1430.5, 31.1), reward = 'laptop', amount = {1, 1}, heavy = false},
-                {name = 'Tablette 2', model = 'prop_cs_tablet_01', coords = vector3(-11.8, -1432.2, 31.1), reward = 'phone', amount = {1, 2}, heavy = false},
-                {name = 'Tablette 3', model = 'prop_cs_tablet_01', coords = vector3(-13.5, -1434.5, 31.1), reward = 'phone', amount = {1, 2}, heavy = false},
-                {name = 'Petit sac 1', model = 'prop_cs_heist_bag_01', coords = vector3(-14.2, -1436.8, 31.1), reward = 'jewel', amount = {5, 10}, heavy = false},
-                {name = 'Petit sac 2', model = 'prop_cs_heist_bag_01', coords = vector3(-15.5, -1438.2, 31.1), reward = 'jewel', amount = {5, 10}, heavy = false},
-                {name = 'Petit sac 3', model = 'prop_cs_heist_bag_01', coords = vector3(-16.8, -1437.5, 31.1), reward = 'jewel', amount = {5, 10}, heavy = false},
-                {name = 'Petit sac 4', model = 'prop_cs_heist_bag_01', coords = vector3(-18.1, -1436.3, 31.1), reward = 'diamond', amount = {2, 4}, heavy = false},
-                {name = 'Petit sac 5', model = 'prop_cs_heist_bag_01', coords = vector3(-12.5, -1435.7, 31.1), reward = 'diamond', amount = {2, 4}, heavy = false},
-                {name = 'Petit sac 6', model = 'prop_cs_heist_bag_01', coords = vector3(-10.8, -1434.3, 31.1), reward = 'diamond', amount = {2, 4}, heavy = false},
-                -- 8 objets LOURDS
-                {name = 'GROS SAC 1', model = 'prop_cs_heist_bag_01', coords = vector3(-13.1412, -1428.7836, 31.1015), reward = 'gold_bar', amount = {1, 2}, heavy = true},
-                {name = 'GROS SAC 2', model = 'prop_cs_heist_bag_01', coords = vector3(-17.6738, -1439.6672, 31.1016), reward = 'gold_bar', amount = {1, 2}, heavy = true},
-                {name = 'GROS SAC 3', model = 'prop_cs_heist_bag_01', coords = vector3(-9.5, -1432.8, 31.1), reward = 'gold_bar', amount = {1, 2}, heavy = true},
-                {name = 'GROS SAC 4', model = 'prop_cs_heist_bag_01', coords = vector3(-19.2, -1438.5, 31.1), reward = 'painting', amount = {1, 1}, heavy = true},
-                {name = 'GROS SAC 5', model = 'prop_cs_heist_bag_01', coords = vector3(-8.8, -1431.2, 31.1), reward = 'painting', amount = {1, 1}, heavy = true},
-                {name = 'GROS SAC 6', model = 'prop_cs_heist_bag_01', coords = vector3(-20.5, -1437.8, 31.1), reward = 'rare_painting', amount = {1, 1}, heavy = true},
-                {name = 'GROS SAC 7', model = 'prop_cs_heist_bag_01', coords = vector3(-7.9, -1429.9, 31.1), reward = 'rare_painting', amount = {1, 1}, heavy = true},
-                {name = 'GROS SAC 8', model = 'prop_cs_heist_bag_01', coords = vector3(-21.3, -1435.6, 31.1), reward = 'antique_sculpture', amount = {1, 1}, heavy = true}
-            }
+        -- POSITIONS DE SPAWN (10 objets max)
+        spawnPositions = {
+            vector3(-11.5318, -1431.8981, 31.1168),
+            vector3(-12.1142, -1433.9563, 31.1018),
+            vector3(-11.3585, -1429.7806, 31.1015),
+            vector3(-13.1412, -1428.7836, 31.1015),
+            vector3(-17.6738, -1439.6672, 31.1016),
+            vector3(-10.5, -1430.5, 31.1),
+            vector3(-14.2, -1436.8, 31.1),
+            vector3(-15.5, -1438.2, 31.1),
+            vector3(-9.5, -1432.8, 31.1),
+            vector3(-19.2, -1438.5, 31.1)
         },
         requiredItem = {
             easy = 'lockpick',
@@ -141,20 +152,17 @@ Config.Locations = {
             exit = vector3(-168.52, 487.93, 137.44),
             interior = vector3(-170.0, 493.0, 137.4)
         },
-        props = {
-            easy = {
-                {name = 'Argent liquide', model = 'hei_prop_heist_cash_pile', coords = vector3(-173.5, 493.2, 138.0), reward = 'black_money', amount = {800, 1500}, heavy = false},
-                {name = 'Sac de bijoux', model = 'prop_cs_heist_bag_01', coords = vector3(-169.8, 490.5, 138.2), reward = 'jewel', amount = {8, 15}, heavy = false},
-                {name = 'Tablette', model = 'prop_cs_tablet_01', coords = vector3(-171.2, 495.8, 137.9), reward = 'laptop', amount = {1, 1}, heavy = false}
-            },
-            hard = {
-                {name = 'Argent liquide', model = 'hei_prop_heist_cash_pile', coords = vector3(-173.5, 493.2, 138.0), reward = 'black_money', amount = {800, 1500}, heavy = false},
-                {name = 'Sac de bijoux', model = 'prop_cs_heist_bag_01', coords = vector3(-169.8, 490.5, 138.2), reward = 'jewel', amount = {8, 15}, heavy = false},
-                {name = 'Tablette', model = 'prop_cs_tablet_01', coords = vector3(-171.2, 495.8, 137.9), reward = 'laptop', amount = {1, 1}, heavy = false},
-                {name = 'Gros sac de valeur', model = 'prop_cs_heist_bag_01', coords = vector3(-175.2, 491.5, 137.4), reward = 'antique_sculpture', amount = {1, 1}, heavy = true},
-                {name = 'Sac d\'argent lourd', model = 'prop_cs_heist_bag_01', coords = vector3(-167.8, 489.2, 137.4), reward = 'diamond', amount = {3, 6}, heavy = true},
-                {name = 'Sac de braquage', model = 'prop_cs_heist_bag_01', coords = vector3(-172.5, 488.8, 137.4), reward = 'rare_painting', amount = {1, 1}, heavy = true}
-            }
+        spawnPositions = {
+            vector3(-173.5, 493.2, 137.4),
+            vector3(-169.8, 490.5, 137.4),
+            vector3(-171.2, 495.8, 137.4),
+            vector3(-175.2, 491.5, 137.4),
+            vector3(-167.8, 489.2, 137.4),
+            vector3(-172.5, 488.8, 137.4),
+            vector3(-170.5, 492.1, 137.4),
+            vector3(-174.1, 494.3, 137.4),
+            vector3(-168.9, 493.7, 137.4),
+            vector3(-176.2, 489.8, 137.4)
         },
         requiredItem = {
             easy = 'lockpick',
@@ -179,19 +187,17 @@ Config.Locations = {
             exit = vector3(-777.12, 319.78, 85.66),
             interior = vector3(-780.0, 315.0, 85.7)
         },
-        props = {
-            easy = {
-                {name = 'Tablette', model = 'prop_cs_tablet_01', coords = vector3(-781.5, 316.2, 86.3), reward = 'laptop', amount = {1, 1}, heavy = false},
-                {name = 'Argent', model = 'hei_prop_heist_cash_pile', coords = vector3(-779.2, 313.5, 86.2), reward = 'black_money', amount = {600, 1200}, heavy = false},
-                {name = 'Sac de bijoux', model = 'prop_cs_heist_bag_01', coords = vector3(-782.8, 318.9, 86.0), reward = 'jewel', amount = {5, 8}, heavy = false}
-            },
-            hard = {
-                {name = 'Tablette', model = 'prop_cs_tablet_01', coords = vector3(-781.5, 316.2, 86.3), reward = 'laptop', amount = {1, 1}, heavy = false},
-                {name = 'Argent', model = 'hei_prop_heist_cash_pile', coords = vector3(-779.2, 313.5, 86.2), reward = 'black_money', amount = {600, 1200}, heavy = false},
-                {name = 'Sac de bijoux', model = 'prop_cs_heist_bag_01', coords = vector3(-782.8, 318.9, 86.0), reward = 'jewel', amount = {5, 8}, heavy = false},
-                {name = 'Gros sac d\'or', model = 'prop_cs_heist_bag_01', coords = vector3(-783.5, 312.8, 85.7), reward = 'gold_bar', amount = {3, 5}, heavy = true},
-                {name = 'Sac de diamants', model = 'prop_cs_heist_bag_01', coords = vector3(-780.5, 319.5, 85.7), reward = 'diamond', amount = {2, 4}, heavy = true}
-            }
+        spawnPositions = {
+            vector3(-781.5, 316.2, 85.7),
+            vector3(-779.2, 313.5, 85.7),
+            vector3(-782.8, 318.9, 85.7),
+            vector3(-783.5, 312.8, 85.7),
+            vector3(-780.5, 319.5, 85.7),
+            vector3(-778.9, 314.8, 85.7),
+            vector3(-782.1, 317.3, 85.7),
+            vector3(-784.2, 315.6, 85.7),
+            vector3(-779.7, 318.2, 85.7),
+            vector3(-781.8, 313.9, 85.7)
         },
         requiredItem = {
             easy = 'lockpick',

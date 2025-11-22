@@ -123,13 +123,36 @@ end
 -- Fonction pour spawner les props
 function SpawnRobberyProps(locationIndex, robberyType)
     local location = Config.Locations[locationIndex]
-    local props = location.props[robberyType]
+    local counts = Config.PropsCount[robberyType]
+    local selectedProps = {}
 
-    for i, prop in ipairs(props) do
-        local propHash = GetHashKey(prop.model)
+    -- Sélectionner les props légers aléatoirement
+    for i = 1, counts.light do
+        local randomIndex = math.random(#Config.AvailableProps.light)
+        local randomProp = Config.AvailableProps.light[randomIndex]
+        table.insert(selectedProps, {
+            prop = randomProp,
+            heavy = false
+        })
+    end
+
+    -- Sélectionner les props lourds aléatoirement
+    for i = 1, counts.heavy do
+        local randomIndex = math.random(#Config.AvailableProps.heavy)
+        local randomProp = Config.AvailableProps.heavy[randomIndex]
+        table.insert(selectedProps, {
+            prop = randomProp,
+            heavy = true
+        })
+    end
+
+    -- Spawner les props aux positions définies
+    for i, selected in ipairs(selectedProps) do
+        local coords = location.spawnPositions[i]
+        local propHash = GetHashKey(selected.prop.model)
         lib.requestModel(propHash, 5000)
 
-        local propObj = CreateObject(propHash, prop.coords.x, prop.coords.y, prop.coords.z, false, false, false)
+        local propObj = CreateObject(propHash, coords.x, coords.y, coords.z, false, false, false)
         FreezeEntityPosition(propObj, true)
         SetEntityAsMissionEntity(propObj, true, true)
 
@@ -137,24 +160,26 @@ function SpawnRobberyProps(locationIndex, robberyType)
         exports.ox_target:addLocalEntity(propObj, {
             {
                 name = 'collect_prop_' .. i,
-                label = 'Récupérer ' .. prop.name,
+                label = 'Récupérer ' .. selected.prop.name,
                 icon = 'fas fa-hand-paper',
                 distance = 2.0,
                 onSelect = function()
-                    CollectProp(locationIndex, robberyType, i, propObj, prop)
+                    CollectProp(locationIndex, robberyType, i, propObj, selected.prop, selected.heavy)
                 end
             }
         })
 
         table.insert(collectedProps, {
             object = propObj,
-            collected = false
+            collected = false,
+            propData = selected.prop,
+            heavy = selected.heavy
         })
     end
 end
 
 -- Fonction pour collecter un prop
-function CollectProp(locationIndex, robberyType, propIndex, propObj, propData)
+function CollectProp(locationIndex, robberyType, propIndex, propObj, propData, isHeavy)
     local playerPed = PlayerPedId()
 
     -- Vérifier si le joueur porte déjà un objet lourd
@@ -186,10 +211,10 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData)
         DeleteObject(propObj)
         collectedProps[propIndex].collected = true
 
-        if propData.heavy then
+        if isHeavy then
             -- Objet lourd : animation + inventaire + restrictions
             AttachHeavyObject(propData)
-            TriggerServerEvent('zcambu:collectItem', robberyType, propIndex)
+            TriggerServerEvent('zcambu:collectItem', propData)
             lib.notify({
                 title = 'Objet lourd',
                 description = 'Objet lourd récupéré ! Mettez-le dans un coffre de véhicule',
@@ -197,7 +222,7 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData)
             })
         else
             -- Objet léger : ajout direct à l'inventaire
-            TriggerServerEvent('zcambu:collectItem', robberyType, propIndex)
+            TriggerServerEvent('zcambu:collectItem', propData)
             lib.notify({
                 title = 'Collecté',
                 description = Config.Locales['item_picked_up'],
