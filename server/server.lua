@@ -9,10 +9,10 @@ local heavyItems = {
     'retro_console',
     'laptop',
     'gaming_setup',
-    'travel_bag',
-    'sport_bag',
-    'sculpture',
-    'carpet'
+    'television',
+    'microwave',
+    'designer_chair',
+    'travel_bag'
 }
 
 -- Fonction pour vérifier le nombre de policiers
@@ -114,6 +114,32 @@ RegisterNetEvent('zcambu:collectItem', function(propData)
     end
 end)
 
+
+-- Event pour notifier la police
+RegisterNetEvent('zcambu:notifyPolice', function(locationName, coords)
+    local source = source
+    local xPlayer = ESX.GetPlayerFromId(source)
+
+    if not xPlayer then return end
+
+    -- Envoyer une notification à tous les policiers
+    local players = ESX.GetExtendedPlayers('job', Config.PoliceJobName)
+
+    for _, policePlayer in ipairs(players) do
+        TriggerClientEvent('ox_lib:notify', policePlayer.source, {
+            title = 'Cambriolage en cours',
+            description = 'Un cambriolage a été signalé : ' .. locationName,
+            type = 'error',
+            duration = 10000,
+            position = 'top'
+        })
+
+        -- Créer un blip temporaire pour la police
+        TriggerClientEvent('zcambu:createPoliceBlip', policePlayer.source, coords)
+    end
+
+    print(string.format('^3[ZCAMBU]^7 Cambriolage signalé à la police : %s par %s', locationName, xPlayer.getName()))
+end)
 
 -- Event pour terminer le braquage
 RegisterNetEvent('zcambu:endRobbery', function()

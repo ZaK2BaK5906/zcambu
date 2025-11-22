@@ -8,6 +8,7 @@ local collectedProps = {}
 
 -- Variables pour la gestion des zones
 local targetZones = {}
+local entryZones = {}
 local currentExitZone = nil
 local reenterZone = nil
 local isOutside = false
@@ -62,6 +63,12 @@ function StartRobbery(locationIndex, robberyType)
     robberyActive = true
     collectedProps = {}
 
+    -- Supprimer la zone d'entrée
+    RemoveEntryZone(locationIndex)
+
+    -- Notifier la police
+    TriggerServerEvent('zcambu:notifyPolice', location.name, location.doorCoords)
+
     -- Animation cinématique
     lib.notify({
         title = 'Cambriolage',
@@ -87,7 +94,7 @@ function StartRobbery(locationIndex, robberyType)
 
     -- Démarrer le timer
     timeRemaining = Config.RobberyTimer
-    StartRobberyTimer()
+    StartRobberyTimer(locationIndex)
 
     -- Spawner les props
     SpawnRobberyProps(locationIndex, robberyType)
@@ -97,7 +104,7 @@ function StartRobbery(locationIndex, robberyType)
 end
 
 -- Fonction pour le timer
-function StartRobberyTimer()
+function StartRobberyTimer(locationIndex)
     CreateThread(function()
         while timeRemaining > 0 and robberyActive do
             Wait(1000)
@@ -119,6 +126,9 @@ function StartRobberyTimer()
                 description = 'Le temps est écoulé ! Sortez rapidement !',
                 type = 'warning'
             })
+            -- Terminer automatiquement le braquage et recréer la zone d'entrée
+            Wait(2000)
+            EndRobbery(locationIndex)
         end
     end)
 end
@@ -538,6 +548,9 @@ function EndRobbery(locationIndex)
     robberyActive = false
     isOutside = false
 
+    -- Recréer la zone d'entrée
+    CreateEntryZone(locationIndex)
+
     -- Notifier le serveur
     TriggerServerEvent('zcambu:endRobbery')
 
@@ -554,28 +567,46 @@ function ExitRobbery(locationIndex)
     EndRobbery(locationIndex)
 end
 
+-- Fonction pour créer la zone d'entrée
+function CreateEntryZone(locationIndex)
+    local location = Config.Locations[locationIndex]
+
+    local zoneName = 'zcambu_entry_' .. locationIndex
+    exports.ox_target:addBoxZone({
+        coords = location.doorCoords,
+        size = vec3(2, 2, 2),
+        rotation = location.doorHeading,
+        debug = Config.Debug,
+        options = {
+            {
+                name = zoneName,
+                label = 'Commencer le cambriolage',
+                icon = 'fas fa-mask',
+                distance = 2.0,
+                onSelect = function()
+                    currentRobbery = locationIndex
+                    OpenRobberyUI(locationIndex)
+                end
+            }
+        }
+    })
+
+    entryZones[locationIndex] = zoneName
+end
+
+-- Fonction pour supprimer la zone d'entrée
+function RemoveEntryZone(locationIndex)
+    if entryZones[locationIndex] then
+        exports.ox_target:removeZone(entryZones[locationIndex])
+        entryZones[locationIndex] = nil
+    end
+end
+
 -- Initialisation des zones ox_target
 CreateThread(function()
     for index, location in ipairs(Config.Locations) do
-        -- Créer la zone ox_target sur la porte
-        exports.ox_target:addBoxZone({
-            coords = location.doorCoords,
-            size = vec3(2, 2, 2),
-            rotation = location.doorHeading,
-            debug = Config.Debug,
-            options = {
-                {
-                    name = 'robbery_door_' .. index,
-                    label = 'Cambrioler ' .. location.name,
-                    icon = 'fas fa-mask',
-                    distance = 2.0,
-                    onSelect = function()
-                        currentRobbery = index
-                        OpenRobberyUI(index)
-                    end
-                }
-            }
-        })
+        -- Créer la zone d'entrée
+        CreateEntryZone(index)
 
         -- Créer le blip si configuré
         if location.blip then
@@ -591,6 +622,26 @@ CreateThread(function()
     end
 end)
 
+
+-- Event pour créer un blip temporaire pour la police
+RegisterNetEvent('zcambu:createPoliceBlip', function(coords)
+    local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(blip, 161) -- Icône de cambriolage
+    SetBlipColour(blip, 1) -- Rouge
+    SetBlipScale(blip, 1.2)
+    SetBlipAsShortRange(blip, false)
+    BeginTextCommandSetBlipName('STRING')
+    AddTextComponentString('Cambriolage en cours')
+    EndTextCommandSetBlipName(blip)
+
+    -- Flash le blip
+    SetBlipFlashes(blip, true)
+
+    -- Supprimer le blip après 5 minutes
+    SetTimeout(300000, function()
+        RemoveBlip(blip)
+    end)
+end)
 
 -- Nettoyage à la déconnexion
 AddEventHandler('onResourceStop', function(resourceName)

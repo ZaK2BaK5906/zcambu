@@ -3,6 +3,8 @@
 
     Copiez ce contenu dans votre fichier ox_inventory/data/items.lua
     ou ajoutez-les à votre configuration ox_inventory existante
+
+    IMPORTANT : Tous les objets sont génériques sans marques (compatible FiveM)
 ]]--
 
 -- ============================================
@@ -54,6 +56,70 @@
     description = 'Une console de jeu portable'
 },
 
+['usb_key'] = {
+    label = 'Clé USB',
+    weight = 20,
+    stack = true,
+    close = true,
+    description = 'Clé USB de stockage'
+},
+
+['tablet'] = {
+    label = 'Tablette tactile',
+    weight = 500,
+    stack = false,
+    close = true,
+    description = 'Tablette tactile moderne'
+},
+
+['camera'] = {
+    label = 'Appareil photo',
+    weight = 800,
+    stack = false,
+    close = true,
+    description = 'Appareil photo numérique'
+},
+
+['game_controller'] = {
+    label = 'Manette de jeu',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = 'Manette pour console de jeux'
+},
+
+['bluetooth_speaker'] = {
+    label = 'Enceinte Bluetooth',
+    weight = 600,
+    stack = false,
+    close = true,
+    description = 'Enceinte sans fil portable'
+},
+
+['powerbank'] = {
+    label = 'Chargeur portable',
+    weight = 300,
+    stack = true,
+    close = true,
+    description = 'Batterie externe pour smartphone'
+},
+
+['calculator'] = {
+    label = 'Calculatrice',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = 'Calculatrice scientifique'
+},
+
+['remote_control'] = {
+    label = 'Télécommande TV',
+    weight = 100,
+    stack = true,
+    close = true,
+    description = 'Télécommande pour télévision'
+},
+
 -- Vêtements et accessoires
 ['cap'] = {
     label = 'Casquette',
@@ -71,52 +137,12 @@
     description = 'Une paire de chaussures de sport'
 },
 
-['shoebox'] = {
-    label = 'Boîte de chaussures',
-    weight = 400,
-    stack = true,
-    close = true,
-    description = 'Une boîte contenant des chaussures'
-},
-
-['clothing_box'] = {
-    label = 'Boîte de vêtements',
-    weight = 350,
-    stack = true,
-    close = true,
-    description = 'Une boîte contenant des vêtements'
-},
-
-['handbag'] = {
-    label = 'Sac à main',
-    weight = 400,
-    stack = true,
-    close = true,
-    description = 'Un sac à main'
-},
-
-['watch'] = {
-    label = 'Montre',
+['fake_watch'] = {
+    label = 'Fausse montre',
     weight = 150,
     stack = true,
     close = true,
-    description = 'Une montre'
-},
-
-['perfume'] = {
-    label = 'Parfum',
-    weight = 200,
-    stack = true,
-    close = true,
-    description = 'Un flacon de parfum'
-},
-
-['jewelry'] = {
-    label = 'Bijoux',
-    weight = 100,
-    stack = true,
-    close = true,
-    description = 'Des bijoux'
+    description = 'Une montre de contrefaçon'
 },
 
 -- Consommables
@@ -136,12 +162,12 @@
     description = 'Une bouteille d\'eau'
 },
 
-['energy_drink'] = {
-    label = 'Boisson énergétique',
-    weight = 170,
+['lighter_deluxe'] = {
+    label = 'Briquet deluxe',
+    weight = 50,
     stack = true,
     close = true,
-    description = 'Une boisson énergisante'
+    description = 'Un briquet de luxe'
 },
 
 -- Divers
@@ -151,30 +177,6 @@
     stack = true,
     close = true,
     description = 'Un skateboard'
-},
-
-['collectible_figure'] = {
-    label = 'Figurine de collection',
-    weight = 300,
-    stack = true,
-    close = true,
-    description = 'Une figurine de collection'
-},
-
-['lighter'] = {
-    label = 'Briquet',
-    weight = 50,
-    stack = true,
-    close = true,
-    description = 'Un briquet'
-},
-
-['remote_control'] = {
-    label = 'Télécommande',
-    weight = 100,
-    stack = true,
-    close = true,
-    description = 'Une télécommande universelle'
 },
 
 -- ============================================
@@ -223,38 +225,38 @@
     description = 'Un setup gaming complet avec écrans'
 },
 
+-- Électroménager et meubles
+['television'] = {
+    label = 'Télévision',
+    weight = 12000,
+    stack = false,
+    close = true,
+    description = 'Télévision grand écran'
+},
+
+['microwave'] = {
+    label = 'Micro-ondes',
+    weight = 14000,
+    stack = false,
+    close = true,
+    description = 'Four à micro-ondes'
+},
+
+['designer_chair'] = {
+    label = 'Chaise design',
+    weight = 8000,
+    stack = false,
+    close = true,
+    description = 'Chaise de designer haut de gamme'
+},
+
 -- Sacs et bagages
 ['travel_bag'] = {
-    label = 'Sac de voyage',
+    label = 'Grand sac de voyage',
     weight = 6000,
     stack = false,
     close = true,
     description = 'Un grand sac de voyage'
-},
-
-['sport_bag'] = {
-    label = 'Sac de sport',
-    weight = 5500,
-    stack = false,
-    close = true,
-    description = 'Un sac de sport'
-},
-
--- Objets de décoration
-['sculpture'] = {
-    label = 'Sculpture',
-    weight = 8000,
-    stack = false,
-    close = true,
-    description = 'Une sculpture de valeur'
-},
-
-['carpet'] = {
-    label = 'Tapis',
-    weight = 7000,
-    stack = false,
-    close = true,
-    description = 'Un tapis de qualité'
 },
 
 -- Note: L'argent sale (black_money) est géré par ESX et n'a pas besoin d'être ajouté ici
