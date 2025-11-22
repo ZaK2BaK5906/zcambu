@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZCambu - Interface</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container" id="app" style="display: none;">
+        <div class="tablet">
+            <div class="tablet-header">
+                <div class="header-left">
+                    <i class="fas fa-mask"></i>
+                    <span class="header-title">SYSTÈME DE CAMBRIOLAGE</span>
+                </div>
+                <div class="header-right">
+                    <button class="close-btn" id="closeBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tablet-body">
+                <div class="location-info">
+                    <h2 id="locationName">Chargement...</h2>
+                    <p class="location-subtitle">Sélectionnez le type de braquage</p>
+                </div>
+
+                <div class="robbery-options">
+                    <!-- Option Facile -->
+                    <div class="option-card" id="easyOption">
+                        <div class="option-icon easy">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="option-content">
+                            <h3>Braquage Facile</h3>
+                            <p class="option-description">
+                                Objets légers uniquement, stockage direct dans l'inventaire
+                            </p>
+                            <div class="option-features">
+                                <div class="feature">
+                                    <i class="fas fa-clock"></i>
+                                    <span>3 minutes</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-box"></i>
+                                    <span>Objets légers</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-key"></i>
+                                    <span>Crochet requis</span>
+                                </div>
+                            </div>
+                            <div class="option-status" id="easyStatus">
+                                <i class="fas fa-lock"></i>
+                                <span>Crochet requis</span>
+                            </div>
+                            <button class="select-btn" id="easyBtn" disabled>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Sélectionner</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Option Difficile -->
+                    <div class="option-card" id="hardOption">
+                        <div class="option-icon hard">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="option-content">
+                            <h3>Braquage Difficile</h3>
+                            <p class="option-description">
+                                Objets lourds à transporter manuellement, récompenses élevées
+                            </p>
+                            <div class="option-features">
+                                <div class="feature">
+                                    <i class="fas fa-clock"></i>
+                                    <span>3 minutes</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-weight-hanging"></i>
+                                    <span>Objets lourds</span>
+                                </div>
+                                <div class="feature">
+                                    <i class="fas fa-key"></i>
+                                    <span>Crochet amélioré requis</span>
+                                </div>
+                            </div>
+                            <div class="option-status" id="hardStatus">
+                                <i class="fas fa-lock"></i>
+                                <span>Crochet amélioré requis</span>
+                            </div>
+                            <button class="select-btn" id="hardBtn" disabled>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Sélectionner</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tablet-footer">
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>La police sera alertée. Soyez prudent !</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
