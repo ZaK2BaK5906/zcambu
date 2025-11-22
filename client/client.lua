@@ -120,7 +120,7 @@ function StartRobberyTimer()
     end)
 end
 
--- Fonction pour spawner les props
+-- Fonction pour spawner les zones de collecte (SANS props visibles)
 function SpawnRobberyProps(locationIndex, robberyType)
     local location = Config.Locations[locationIndex]
     local counts = Config.PropsCount[robberyType]
@@ -146,47 +146,58 @@ function SpawnRobberyProps(locationIndex, robberyType)
         })
     end
 
-    -- Spawner les props aux positions définies
+    -- Créer des ZONES OX_TARGET invisibles (pas de props physiques)
     for i, selected in ipairs(selectedProps) do
         local coords = location.spawnPositions[i]
-        local propHash = GetHashKey(selected.prop.model)
-        lib.requestModel(propHash, 5000)
 
-        local propObj = CreateObject(propHash, coords.x, coords.y, coords.z, false, false, false)
-        FreezeEntityPosition(propObj, true)
-        SetEntityAsMissionEntity(propObj, true, true)
-
-        -- Créer l'interaction ox_target
-        exports.ox_target:addLocalEntity(propObj, {
-            {
-                name = 'collect_prop_' .. i,
-                label = 'Récupérer ' .. selected.prop.name,
-                icon = 'fas fa-hand-paper',
-                distance = 2.0,
-                onSelect = function()
-                    CollectProp(locationIndex, robberyType, i, propObj, selected.prop, selected.heavy)
-                end
+        -- Créer une zone ox_target invisible
+        local zoneName = 'zcambu_collect_' .. locationIndex .. '_' .. i
+        exports.ox_target:addSphereZone({
+            coords = coords,
+            radius = 1.5,
+            debug = false, -- Pas de debug visuel
+            options = {
+                {
+                    name = zoneName,
+                    label = 'Récupérer ' .. selected.prop.name,
+                    icon = 'fas fa-hand-paper',
+                    onSelect = function()
+                        CollectProp(locationIndex, robberyType, i, nil, selected.prop, selected.heavy)
+                    end
+                }
             }
         })
 
+        -- Stocker les informations
         table.insert(collectedProps, {
-            object = propObj,
+            zoneName = zoneName,
             collected = false,
             propData = selected.prop,
-            heavy = selected.heavy
+            heavy = selected.heavy,
+            coords = coords
         })
     end
 end
 
--- Fonction pour collecter un prop
+-- Fonction pour collecter un item (depuis zone ox_target)
 function CollectProp(locationIndex, robberyType, propIndex, propObj, propData, isHeavy)
     local playerPed = PlayerPedId()
 
-    -- Vérifier si le joueur porte déjà un objet lourd
-    if carryingObject then
+    -- Vérifier si déjà collecté
+    if collectedProps[propIndex] and collectedProps[propIndex].collected then
         lib.notify({
             title = 'Erreur',
-            description = 'Vous portez déjà un objet',
+            description = 'Objet déjà récupéré',
+            type = 'error'
+        })
+        return
+    end
+
+    -- Vérifier si le joueur porte déjà un objet lourd
+    if carryingObject and isHeavy then
+        lib.notify({
+            title = 'Erreur',
+            description = 'Vous portez déjà un objet lourd',
             type = 'error'
         })
         return
@@ -207,32 +218,36 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData, i
             combat = true
         }
     }) then
-        -- Supprimer le prop du monde
-        DeleteObject(propObj)
+        -- Supprimer la zone ox_target
+        if collectedProps[propIndex] and collectedProps[propIndex].zoneName then
+            exports.ox_target:removeZone(collectedProps[propIndex].zoneName)
+        end
+
+        -- Marquer comme collecté
         collectedProps[propIndex].collected = true
 
         if isHeavy then
-            -- Objet lourd : animation + inventaire + restrictions
+            -- Objet lourd : prop en main + inventaire + restrictions
             AttachHeavyObject(propData)
             TriggerServerEvent('zcambu:collectItem', propData)
             lib.notify({
                 title = 'Objet lourd',
-                description = 'Objet lourd récupéré ! Mettez-le dans un coffre de véhicule',
+                description = 'Sortez-le de votre inventaire pour le déposer',
                 type = 'warning'
             })
         else
-            -- Objet léger : ajout direct à l'inventaire
+            -- Objet léger : direct dans l'inventaire (pas de props)
             TriggerServerEvent('zcambu:collectItem', propData)
             lib.notify({
                 title = 'Collecté',
-                description = Config.Locales['item_picked_up'],
+                description = 'Objet ajouté à l\'inventaire',
                 type = 'success'
             })
         end
     else
         lib.notify({
             title = 'Annulé',
-            description = Config.Locales['cancelled'],
+            description = 'Récupération annulée',
             type = 'error'
         })
     end
@@ -404,10 +419,10 @@ function ExitRobbery(locationIndex)
     Wait(500)
     DoScreenFadeIn(1000)
 
-    -- Nettoyer les props restants
+    -- Nettoyer les zones ox_target restantes
     for _, prop in pairs(collectedProps) do
-        if prop.object and DoesEntityExist(prop.object) then
-            DeleteObject(prop.object)
+        if prop.zoneName and not prop.collected then
+            exports.ox_target:removeZone(prop.zoneName)
         end
     end
     collectedProps = {}

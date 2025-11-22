@@ -75,13 +75,25 @@ RegisterNetEvent('zcambu:collectItem', function(propData)
     local source = source
     local xPlayer = ESX.GetPlayerFromId(source)
 
-    if not xPlayer or not activeRobberies[source] then
+    -- Debug : vérifier si le joueur existe
+    if not xPlayer then
+        print('^1[ZCAMBU ERROR]^7 xPlayer not found for source: ' .. source)
         return
     end
 
-    if not propData then
+    -- Debug : vérifier si le braquage est actif
+    if not activeRobberies[source] then
+        print('^1[ZCAMBU ERROR]^7 No active robbery for source: ' .. source)
         return
     end
+
+    -- Debug : vérifier propData
+    if not propData then
+        print('^1[ZCAMBU ERROR]^7 propData is nil')
+        return
+    end
+
+    print('^3[ZCAMBU DEBUG]^7 Collecting item: ' .. propData.name .. ' (reward: ' .. propData.reward .. ')')
 
     -- Donner la récompense (léger OU lourd)
     local amount = math.random(propData.amount[1], propData.amount[2])
@@ -90,14 +102,15 @@ RegisterNetEvent('zcambu:collectItem', function(propData)
         local account = xPlayer.getAccount('black_money')
         if account then
             xPlayer.addAccountMoney('black_money', amount)
+            print('^2[ZCAMBU SUCCESS]^7 Added ' .. amount .. '$ black money to ' .. xPlayer.getName())
         end
     else
-        exports.ox_inventory:AddItem(source, propData.reward, amount)
-    end
-
-    -- Log
-    if Config.Debug then
-        print(string.format('[ZCAMBU] %s a collecté %dx %s (%s)', xPlayer.getName(), amount, propData.reward, propData.name))
+        local success = exports.ox_inventory:AddItem(source, propData.reward, amount)
+        if success then
+            print('^2[ZCAMBU SUCCESS]^7 Added ' .. amount .. 'x ' .. propData.reward .. ' to ' .. xPlayer.getName())
+        else
+            print('^1[ZCAMBU ERROR]^7 Failed to add item ' .. propData.reward .. ' to inventory')
+        end
     end
 end)
 
