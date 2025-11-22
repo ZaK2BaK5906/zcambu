@@ -60,7 +60,7 @@ $(document).ready(function() {
         $('#app').fadeOut(300);
 
         // Envoyer un message au client Lua
-        $.post('http://zcambu/closeUI', JSON.stringify({}));
+        $.post('https://zcambu/closeUI', JSON.stringify({}));
     }
 
     // Fonction pour démarrer un braquage
@@ -71,7 +71,7 @@ $(document).ready(function() {
         btn.prop('disabled', true);
 
         // Envoyer au client Lua
-        $.post('http://zcambu/startRobbery', JSON.stringify({
+        $.post('https://zcambu/startRobbery', JSON.stringify({
             type: type
         }));
 
