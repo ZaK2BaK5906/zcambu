@@ -129,7 +129,8 @@ Config.Locations = {
             name = 'FranklinHouse',
             enter = vector3(-9.35, -1438.51, 31.10),
             exit = vector3(-14.53, -1440.10, 31.10),
-            interior = vector3(-13.5, -1439.5, 31.1)
+            interior = vector3(-13.5, -1439.5, 31.1),
+            exitDoorCoords = vector3(-14.53, -1440.10, 31.10) -- Porte intérieure pour sortir
         },
         -- POSITIONS DE SPAWN (10 objets max)
         spawnPositions = {
@@ -165,7 +166,8 @@ Config.Locations = {
             name = 'VinewoodHouse',
             enter = vector3(-174.35, 502.66, 137.42),
             exit = vector3(-168.52, 487.93, 137.44),
-            interior = vector3(-170.0, 493.0, 137.4)
+            interior = vector3(-170.0, 493.0, 137.4),
+            exitDoorCoords = vector3(-168.52, 487.93, 137.44) -- Porte intérieure pour sortir
         },
         spawnPositions = {
             vector3(-173.5, 493.2, 137.4),
@@ -200,7 +202,8 @@ Config.Locations = {
             name = 'EclipseApartment',
             enter = vector3(-773.41, 312.45, 85.70),
             exit = vector3(-777.12, 319.78, 85.66),
-            interior = vector3(-780.0, 315.0, 85.7)
+            interior = vector3(-780.0, 315.0, 85.7),
+            exitDoorCoords = vector3(-777.12, 319.78, 85.66) -- Porte intérieure pour sortir
         },
         spawnPositions = {
             vector3(-781.5, 316.2, 85.7),

@@ -8,6 +8,9 @@ local collectedProps = {}
 
 -- Variables pour la gestion des zones
 local targetZones = {}
+local currentExitZone = nil
+local reenterZone = nil
+local isOutside = false
 
 -- Fonction pour ouvrir la NUI
 local function OpenRobberyUI(locationIndex)
@@ -372,33 +375,115 @@ RegisterNetEvent('zcambu:removeCarriedObject', function()
     RemoveCarriedObject()
 end)
 
--- Fonction pour créer la zone de sortie
+-- Fonction pour créer la zone de sortie (ox_target sur la porte intérieure)
 function CreateExitZone(locationIndex)
     local location = Config.Locations[locationIndex]
 
-    -- Créer un point de sortie
-    local exitPoint = lib.points.new({
-        coords = location.ipl.exit,
-        distance = 2.0,
-        onEnter = function()
-            lib.showTextUI('[E] Sortir du bâtiment', {
-                position = 'left-center',
-                icon = 'door-open'
-            })
-        end,
-        onExit = function()
-            lib.hideTextUI()
-        end,
-        nearby = function()
-            if IsControlJustPressed(0, 38) then -- E
-                ExitRobbery(locationIndex)
-            end
-        end
+    -- Créer une zone ox_target sur la porte intérieure
+    local zoneName = 'zcambu_exit_' .. locationIndex
+    exports.ox_target:addSphereZone({
+        coords = location.ipl.exitDoorCoords,
+        radius = 1.5,
+        debug = false,
+        options = {
+            {
+                name = zoneName .. '_temp',
+                label = 'Sortir temporairement',
+                icon = 'fas fa-door-open',
+                onSelect = function()
+                    TemporaryExit(locationIndex)
+                end
+            },
+            {
+                name = zoneName .. '_end',
+                label = 'Arrêter le braquage',
+                icon = 'fas fa-times-circle',
+                onSelect = function()
+                    EndRobbery(locationIndex)
+                end
+            }
+        }
+    })
+
+    -- Stocker le nom de la zone pour la supprimer plus tard
+    currentExitZone = zoneName
+end
+
+-- Fonction pour sortir temporairement (pour déposer objets lourds dans véhicule)
+function TemporaryExit(locationIndex)
+    local location = Config.Locations[locationIndex]
+    local playerPed = PlayerPedId()
+
+    DoScreenFadeOut(1000)
+    Wait(1000)
+
+    -- Téléporter à la porte extérieure
+    SetEntityCoords(playerPed, location.doorCoords.x, location.doorCoords.y, location.doorCoords.z)
+    SetEntityHeading(playerPed, location.doorHeading)
+
+    isOutside = true
+
+    Wait(500)
+    DoScreenFadeIn(1000)
+
+    -- Créer une zone pour rentrer à nouveau
+    local reenterZoneName = 'zcambu_reenter_' .. locationIndex
+    exports.ox_target:addSphereZone({
+        coords = location.doorCoords,
+        radius = 1.5,
+        debug = false,
+        options = {
+            {
+                name = reenterZoneName,
+                label = 'Rentrer dans la maison',
+                icon = 'fas fa-door-closed',
+                onSelect = function()
+                    ReenterRobbery(locationIndex)
+                end
+            }
+        }
+    })
+
+    reenterZone = reenterZoneName
+
+    lib.notify({
+        title = 'Sortie temporaire',
+        description = 'Vous pouvez rentrer à nouveau. Timer continue !',
+        type = 'info'
     })
 end
 
--- Fonction pour sortir du braquage
-function ExitRobbery(locationIndex)
+-- Fonction pour rentrer à nouveau dans la maison
+function ReenterRobbery(locationIndex)
+    local location = Config.Locations[locationIndex]
+    local playerPed = PlayerPedId()
+
+    -- Supprimer la zone de rentrée
+    if reenterZone then
+        exports.ox_target:removeZone(reenterZone)
+        reenterZone = nil
+    end
+
+    DoScreenFadeOut(1000)
+    Wait(1000)
+
+    -- Téléporter à l'intérieur
+    SetEntityCoords(playerPed, location.ipl.interior.x, location.ipl.interior.y, location.ipl.interior.z)
+
+    isOutside = false
+
+    Wait(500)
+    DoScreenFadeIn(1000)
+
+    lib.notify({
+        title = 'De retour',
+        description = 'Vous êtes rentré dans la maison',
+        type = 'success'
+    })
+end
+
+-- Fonction pour terminer le braquage (définitif)
+function EndRobbery(locationIndex)
     local location = Config.Locations[locationIndex]
     local playerPed = PlayerPedId()
 
@@ -438,18 +523,35 @@ function ExitRobbery(locationIndex)
     end
     collectedProps = {}
 
-    lib.hideTextUI()
+    -- Supprimer la zone de sortie
+    if currentExitZone then
+        exports.ox_target:removeZone(currentExitZone)
+        currentExitZone = nil
+    end
+
+    -- Supprimer la zone de rentrée si elle existe
+    if reenterZone then
+        exports.ox_target:removeZone(reenterZone)
+        reenterZone = nil
+    end
 
     robberyActive = false
+    isOutside = false
 
     -- Notifier le serveur
     TriggerServerEvent('zcambu:endRobbery')
 
     lib.notify({
-        title = 'Cambriolage',
-        description = Config.Locales['robbery_complete'],
+        title = 'Braquage terminé',
+        description = 'Vous avez quitté le braquage',
         type = 'success'
     })
+end
+
+-- Fonction pour sortir du braquage (appelée par le timer)
+function ExitRobbery(locationIndex)
+    -- Appeler la fonction EndRobbery
+    EndRobbery(locationIndex)
 end
 
 -- Initialisation des zones ox_target
