@@ -230,6 +230,8 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData, i
             combat = true
         }
     }) then
+        -- Stopper l'animation après avoir ramassé l'objet
+        ExecuteCommand('e c')
         -- Supprimer la zone ox_target
         if collectedProps[propIndex] and collectedProps[propIndex].zoneName then
             exports.ox_target:removeZone(collectedProps[propIndex].zoneName)
@@ -547,8 +549,8 @@ function EndRobbery(locationIndex)
     robberyActive = false
     isOutside = false
 
-    -- Recréer la zone d'entrée
-    CreateEntryZone(locationIndex)
+    -- NE PAS recréer la zone d'entrée (cooldown géré par le serveur)
+    -- CreateEntryZone(locationIndex) -- SUPPRIMÉ pour éviter les re-entrées
 
     -- Notifier le serveur
     TriggerServerEvent('zcambu:endRobbery')
@@ -601,11 +603,12 @@ function RemoveEntryZone(locationIndex)
     end
 end
 
--- Initialisation des zones ox_target
+-- Initialisation des zones ox_target et blips
 CreateThread(function()
     for index, location in ipairs(Config.Locations) do
-        -- Créer la zone d'entrée
-        CreateEntryZone(index)
+        -- NE PAS créer de zone d'entrée automatiquement au démarrage
+        -- La zone sera créée uniquement quand le joueur peut braquer (pas de cooldown)
+        -- CreateEntryZone(index) -- SUPPRIMÉ
 
         -- Créer le blip si configuré
         if location.blip then
@@ -617,6 +620,42 @@ CreateThread(function()
             BeginTextCommandSetBlipName('STRING')
             AddTextComponentString(location.blip.label)
             EndTextCommandSetBlipName(blip)
+        end
+    end
+end)
+
+-- Thread pour gérer les zones d'entrée dynamiques (avec cooldown)
+CreateThread(function()
+    while true do
+        Wait(1000) -- Vérifier toutes les secondes
+
+        local playerPed = PlayerPedId()
+        local playerCoords = GetEntityCoords(playerPed)
+
+        -- Si un braquage est actif, ne rien faire
+        if not robberyActive then
+            -- Vérifier chaque location
+            for index, location in ipairs(Config.Locations) do
+                local distance = #(playerCoords - location.doorCoords)
+
+                -- Si le joueur est proche de la porte (< 10m)
+                if distance < 10.0 then
+                    -- Vérifier si la zone existe déjà
+                    if not entryZones[index] then
+                        -- Vérifier le cooldown côté serveur avant de créer la zone
+                        ESX.TriggerServerCallback('zcambu:canShowEntryZone', function(canShow)
+                            if canShow and not entryZones[index] and not robberyActive then
+                                CreateEntryZone(index)
+                            end
+                        end, index)
+                    end
+                else
+                    -- Si le joueur est loin, supprimer la zone pour économiser les ressources
+                    if entryZones[index] then
+                        RemoveEntryZone(index)
+                    end
+                end
+            end
         end
     end
 end)

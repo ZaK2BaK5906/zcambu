@@ -66,7 +66,7 @@ Config.PropsCount = {
 
 -- Paramètres généraux
 Config.Debug = false
-Config.RobberyTimer = 180 -- Durée du braquage en secondes (3 minutes)
+Config.RobberyTimer = 20 -- Durée du braquage en secondes (20 secondes pour test)
 Config.CooldownTime = 1800 -- Temps d'attente entre deux braquages (30 minutes)
 Config.PoliceJobName = 'police'
 Config.MinPoliceOnline = 0 -- Nombre minimum de policiers requis
