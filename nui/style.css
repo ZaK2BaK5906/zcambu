@@ -18,11 +18,21 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 9999;
     animation: fadeIn 0.3s ease-in-out;
+    /* Optimisations GPU pour éviter les clignotements */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+    will-change: opacity;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 @keyframes fadeIn {
@@ -37,21 +47,27 @@ body {
 .tablet {
     width: 90%;
     max-width: 900px;
-    background: linear-gradient(135deg, rgba(20, 20, 30, 0.95), rgba(30, 30, 45, 0.95));
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(30, 30, 45, 0.98));
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     overflow: hidden;
     animation: slideUp 0.4s ease-out;
+    /* Optimisations GPU */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: transform, opacity;
 }
 
 @keyframes slideUp {
     from {
-        transform: translateY(50px);
+        transform: translateY(50px) translateZ(0);
         opacity: 0;
     }
     to {
-        transform: translateY(0);
+        transform: translateY(0) translateZ(0);
         opacity: 1;
     }
 }
@@ -142,6 +158,11 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    /* Optimisations GPU */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 .option-card::before {
@@ -158,7 +179,7 @@ body {
 
 .option-card:hover {
     border-color: rgba(102, 126, 234, 0.5);
-    transform: translateY(-5px);
+    transform: translateY(-5px) translateZ(0);
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
@@ -330,11 +351,11 @@ body {
 @keyframes cardSlideIn {
     from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateX(-30px) translateZ(0);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) translateZ(0);
     }
 }
 
