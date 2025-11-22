@@ -233,6 +233,39 @@ function AttachHeavyObject(propData)
     -- Réduire la vitesse de marche
     SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.walkSpeed)
 
+    -- Ajouter ox_target sur les véhicules pour déposer
+    CreateThread(function()
+        while carryingObject do
+            Wait(1000)
+            local coords = GetEntityCoords(playerPed)
+            local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
+
+            for _, vehicle in pairs(vehicles) do
+                local vehNetId = NetworkGetNetworkIdFromEntity(vehicle.vehicle)
+
+                -- Ajouter target seulement si pas déjà ajouté
+                exports.ox_target:addLocalEntity(vehicle.vehicle, {
+                    {
+                        name = 'deposit_heavy_item_' .. vehNetId,
+                        label = 'Déposer dans le coffre',
+                        icon = 'fas fa-box',
+                        distance = 3.0,
+                        onSelect = function()
+                            DepositHeavyObject(vehicle.vehicle)
+                        end
+                    }
+                })
+            end
+        end
+
+        -- Nettoyer les targets quand on ne porte plus rien
+        local coords = GetEntityCoords(playerPed)
+        local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
+        for _, vehicle in pairs(vehicles) do
+            exports.ox_target:removeLocalEntity(vehicle.vehicle, 'deposit_heavy_item_' .. NetworkGetNetworkIdFromEntity(vehicle.vehicle))
+        end
+    end)
+
     -- Thread pour empêcher certaines actions
     CreateThread(function()
         while carryingObject do
@@ -258,56 +291,50 @@ function AttachHeavyObject(propData)
 end
 
 -- Fonction pour déposer un objet lourd dans le coffre
-function DepositHeavyObject()
+function DepositHeavyObject(vehicle)
     if not carryingObject then return end
 
     local playerPed = PlayerPedId()
-    local vehicle = GetVehiclePedIsIn(playerPed, false)
 
-    if vehicle == 0 then
-        -- Chercher un véhicule proche
-        local coords = GetEntityCoords(playerPed)
-        vehicle = lib.getClosestVehicle(coords, 3.0, false)
-    end
-
-    if vehicle and vehicle ~= 0 then
-        -- Animation de dépôt
-        if lib.progressBar({
-            duration = 2000,
-            label = 'Dépôt dans le coffre...',
-            useWhileDead = false,
-            canCancel = true,
-            disable = {
-                move = true,
-                car = true,
-                combat = true
-            }
-        }) then
-            -- Détacher et supprimer le prop
+    -- Animation de dépôt
+    if lib.progressBar({
+        duration = 2000,
+        label = 'Dépôt dans le coffre...',
+        useWhileDead = false,
+        canCancel = true,
+        disable = {
+            move = true,
+            car = true,
+            combat = true
+        }
+    }) then
+        -- Détacher et supprimer le prop
+        if DoesEntityExist(carryingProp) then
             DetachEntity(carryingProp, true, true)
             DeleteObject(carryingProp)
-            carryingProp = nil
-
-            -- Réinitialiser la vitesse
-            SetPedMoveRateOverride(playerPed, 1.0)
-            ClearPedTasks(playerPed)
-
-            -- Donner la récompense
-            TriggerServerEvent('zcambu:depositHeavyItem', carryingObject)
-
-            carryingObject = nil
-
-            lib.notify({
-                title = 'Déposé',
-                description = 'Objet déposé dans le coffre',
-                type = 'success'
-            })
         end
-    else
+        carryingProp = nil
+
+        -- Réinitialiser la vitesse
+        SetPedMoveRateOverride(playerPed, 1.0)
+        ClearPedTasks(playerPed)
+
+        -- Donner la récompense
+        TriggerServerEvent('zcambu:depositHeavyItem', carryingObject)
+
+        -- Nettoyer les targets
+        local coords = GetEntityCoords(playerPed)
+        local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
+        for _, veh in pairs(vehicles) do
+            exports.ox_target:removeLocalEntity(veh.vehicle, 'deposit_heavy_item_' .. NetworkGetNetworkIdFromEntity(veh.vehicle))
+        end
+
+        carryingObject = nil
+
         lib.notify({
-            title = 'Erreur',
-            description = 'Aucun véhicule à proximité',
-            type = 'error'
+            title = 'Déposé',
+            description = 'Objet déposé dans le coffre',
+            type = 'success'
         })
     end
 end
@@ -357,15 +384,32 @@ function ExitRobbery(locationIndex)
     DoScreenFadeOut(1000)
     Wait(1000)
 
-    -- Si le joueur porte un objet, le détacher
+    -- Nettoyer l'objet porté
     if carryingObject then
-        DetachEntity(carryingProp, true, true)
-        DeleteObject(carryingProp)
+        -- Détacher et supprimer le prop
+        if carryingProp and DoesEntityExist(carryingProp) then
+            DetachEntity(carryingProp, true, true)
+            DeleteObject(carryingProp)
+        end
+
+        -- Réinitialiser l'état du joueur
         SetPedMoveRateOverride(playerPed, 1.0)
         ClearPedTasks(playerPed)
+        ClearPedSecondaryTask(playerPed)
 
-        -- Donner l'objet au joueur
+        -- Nettoyer les targets de véhicules
+        local coords = GetEntityCoords(playerPed)
+        local vehicles = lib.getNearbyVehicles(coords, 20.0, true)
+        for _, veh in pairs(vehicles) do
+            local vehNetId = NetworkGetNetworkIdFromEntity(veh.vehicle)
+            pcall(function()
+                exports.ox_target:removeLocalEntity(veh.vehicle, 'deposit_heavy_item_' .. vehNetId)
+            end)
+        end
+
+        -- Donner l'objet au joueur automatiquement
         TriggerServerEvent('zcambu:depositHeavyItem', carryingObject)
+
         carryingObject = nil
         carryingProp = nil
     end
@@ -379,10 +423,11 @@ function ExitRobbery(locationIndex)
 
     -- Nettoyer les props restants
     for _, prop in pairs(collectedProps) do
-        if DoesEntityExist(prop.object) then
+        if prop.object and DoesEntityExist(prop.object) then
             DeleteObject(prop.object)
         end
     end
+    collectedProps = {}
 
     lib.hideTextUI()
 
