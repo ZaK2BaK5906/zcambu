@@ -77,10 +77,10 @@ Config.Items = {
     hard = 'lockpick_advanced' -- Crochet amélioré pour braquage difficile
 }
 
--- Vitesse de marche avec objet lourd
+-- Vitesse de marche avec objet lourd (1.0 = normal, 0.5 = 50% plus lent)
 Config.HeavyObjectSpeed = {
-    walkSpeed = 1.0,
-    runSpeed = 2.0
+    walkSpeed = 0.5,  -- Marche à 50% de la vitesse normale
+    runSpeed = 0.5    -- Pas de sprint, même vitesse que la marche
 }
 
 -- Animations

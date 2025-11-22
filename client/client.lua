@@ -273,12 +273,26 @@ function AttachHeavyObject(propData)
     -- Réduire la vitesse de marche
     SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.walkSpeed)
 
+    -- Bloquer le sprint complètement
+    SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+    SetSwimMultiplierForPlayer(PlayerId(), 1.0)
+
     -- Thread pour empêcher certaines actions
     CreateThread(function()
         while carryingObject do
             Wait(0)
+
+            -- Maintenir la vitesse lente
+            SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.walkSpeed)
+
+            -- Désactiver le sprint
+            DisableControlAction(0, 21, true) -- Sprint (Shift)
+            DisableControlAction(0, 22, true) -- Saut (Espace)
+
+            -- Désactiver les armes et combat
             DisableControlAction(0, 24, true) -- Attaque
             DisableControlAction(0, 25, true) -- Viser
+            DisableControlAction(0, 37, true) -- Arme (TAB)
             DisableControlAction(0, 47, true) -- Arme
             DisableControlAction(0, 58, true) -- Arme
             DisableControlAction(0, 140, true) -- Combat léger
@@ -289,11 +303,13 @@ function AttachHeavyObject(propData)
             DisableControlAction(0, 264, true) -- Mêlée 2
             DisableControlAction(0, 257, true) -- Mêlée 3
 
-            -- Empêcher de sprinter
-            if IsPedSprinting(playerPed) then
-                SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.runSpeed)
-            end
+            -- Empêcher de monter dans un véhicule
+            DisableControlAction(0, 23, true) -- F (entrer véhicule)
         end
+
+        -- Réinitialiser les multiplicateurs quand on arrête de porter
+        SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
+        SetSwimMultiplierForPlayer(PlayerId(), 1.0)
     end)
 end
 
