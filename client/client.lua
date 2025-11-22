@@ -292,10 +292,21 @@ function AttachHeavyObject(propData)
     SetRunSprintMultiplierForPlayer(PlayerId(), 1.0)
     SetSwimMultiplierForPlayer(PlayerId(), 1.0)
 
-    -- Thread pour empêcher certaines actions
+    -- Thread pour empêcher certaines actions ET vérifier l'inventaire
     CreateThread(function()
         while carryingObject do
-            Wait(0)
+            Wait(500) -- Vérifier toutes les 500ms au lieu de 0ms
+
+            local playerPed = PlayerPedId()
+
+            -- VÉRIFIER SI L'ITEM EST TOUJOURS DANS L'INVENTAIRE
+            local hasItem = exports.ox_inventory:Search('count', carryingObject.reward) > 0
+            if not hasItem then
+                -- L'item n'est plus dans l'inventaire, enlever le prop
+                print('^3[ZCAMBU]^7 Item removed from inventory, cleaning up prop')
+                RemoveCarriedObject()
+                break
+            end
 
             -- Maintenir la vitesse lente
             SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.walkSpeed)

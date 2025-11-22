@@ -4,15 +4,15 @@ local activeRobberies = {} -- Braquages actifs
 
 -- Liste des items lourds (pour la détection de retrait)
 local heavyItems = {
-    'ps5_console',
-    'ps4_console',
-    'xbox_console',
-    'macbook',
+    'game_console',
+    'game_console_pro',
+    'retro_console',
+    'laptop',
     'gaming_setup',
-    'lv_bag_large',
-    'gucci_bag',
-    'kaws_statue',
-    'designer_rug'
+    'travel_bag',
+    'sport_bag',
+    'sculpture',
+    'carpet'
 }
 
 -- Fonction pour vérifier le nombre de policiers

@@ -1,5 +1,5 @@
 --[[
-    ITEMS OX_INVENTORY POUR ZCAMBU
+    ITEMS OX_INVENTORY POUR ZCAMBU (SANS MARQUES)
 
     Copiez ce contenu dans votre fichier ox_inventory/data/items.lua
     ou ajoutez-les à votre configuration ox_inventory existante
@@ -35,73 +35,88 @@
     weight = 250,
     stack = true,
     close = true,
-    description = 'Un smartphone haut de gamme'
+    description = 'Un smartphone récent'
 },
 
-['apple_headset'] = {
-    label = 'AirPods',
+['bluetooth_earbuds'] = {
+    label = 'Écouteurs Bluetooth',
     weight = 100,
     stack = true,
     close = true,
-    description = 'Des écouteurs Apple AirPods'
+    description = 'Des écouteurs sans fil'
 },
 
-['nintendo_switch'] = {
-    label = 'Nintendo Switch',
+['handheld_console'] = {
+    label = 'Console portable',
     weight = 800,
     stack = true,
     close = true,
-    description = 'Console portable Nintendo Switch'
+    description = 'Une console de jeu portable'
 },
 
 -- Vêtements et accessoires
-['designer_cap'] = {
-    label = 'Casquette Designer',
+['cap'] = {
+    label = 'Casquette',
     weight = 150,
     stack = true,
     close = true,
-    description = 'Une casquette de marque de luxe'
+    description = 'Une casquette'
 },
 
-['yeezy_slide'] = {
-    label = 'Yeezy Slide',
+['sport_shoes'] = {
+    label = 'Chaussures de sport',
     weight = 300,
     stack = true,
     close = true,
-    description = 'Paire de Yeezy Slide'
+    description = 'Une paire de chaussures de sport'
 },
 
-['nike_shoes'] = {
-    label = 'Chaussures Nike',
-    weight = 500,
-    stack = true,
-    close = true,
-    description = 'Paire de chaussures Nike dans sa boîte'
-},
-
--- Articles de luxe
-['versace_box'] = {
-    label = 'Boîte Versace',
+['shoebox'] = {
+    label = 'Boîte de chaussures',
     weight = 400,
     stack = true,
     close = true,
-    description = 'Une boîte Versace contenant des articles de luxe'
+    description = 'Une boîte contenant des chaussures'
 },
 
-['bape_box'] = {
-    label = 'Boîte Bape',
+['clothing_box'] = {
+    label = 'Boîte de vêtements',
     weight = 350,
     stack = true,
     close = true,
-    description = 'Une boîte de vêtements Bape'
+    description = 'Une boîte contenant des vêtements'
 },
 
-['lv_bag_small'] = {
-    label = 'Petit Sac Louis Vuitton',
-    weight = 600,
+['handbag'] = {
+    label = 'Sac à main',
+    weight = 400,
     stack = true,
     close = true,
-    description = 'Un petit sac à main Louis Vuitton'
+    description = 'Un sac à main'
+},
+
+['watch'] = {
+    label = 'Montre',
+    weight = 150,
+    stack = true,
+    close = true,
+    description = 'Une montre'
+},
+
+['perfume'] = {
+    label = 'Parfum',
+    weight = 200,
+    stack = true,
+    close = true,
+    description = 'Un flacon de parfum'
+},
+
+['jewelry'] = {
+    label = 'Bijoux',
+    weight = 100,
+    stack = true,
+    close = true,
+    description = 'Des bijoux'
 },
 
 -- Consommables
@@ -113,28 +128,20 @@
     description = 'Une cigarette électronique'
 },
 
-['fiji_water'] = {
-    label = 'Fiji Water',
-    weight = 200,
+['water_bottle'] = {
+    label = 'Bouteille d\'eau',
+    weight = 150,
     stack = true,
     close = true,
-    description = 'Bouteille d\'eau de luxe Fiji'
+    description = 'Une bouteille d\'eau'
 },
 
-['prime_drink'] = {
-    label = 'Prime Drink',
-    weight = 180,
-    stack = true,
-    close = true,
-    description = 'Boisson énergisante Prime'
-},
-
-['monster_energy'] = {
-    label = 'Monster Energy',
+['energy_drink'] = {
+    label = 'Boisson énergétique',
     weight = 170,
     stack = true,
     close = true,
-    description = 'Boisson énergisante Monster'
+    description = 'Une boisson énergisante'
 },
 
 -- Divers
@@ -143,31 +150,23 @@
     weight = 800,
     stack = true,
     close = true,
-    description = 'Un skateboard de marque'
+    description = 'Un skateboard'
 },
 
-['kaws_figure_small'] = {
-    label = 'Figurine Kaws',
+['collectible_figure'] = {
+    label = 'Figurine de collection',
     weight = 300,
     stack = true,
     close = true,
-    description = 'Une petite figurine de collection Kaws'
+    description = 'Une figurine de collection'
 },
 
 ['lighter'] = {
-    label = 'Briquet de Luxe',
+    label = 'Briquet',
     weight = 50,
     stack = true,
     close = true,
-    description = 'Un briquet design'
-},
-
-['candy_bag'] = {
-    label = 'Sac de Bonbons',
-    weight = 150,
-    stack = true,
-    close = true,
-    description = 'Un sac rempli de bonbons'
+    description = 'Un briquet'
 },
 
 ['remote_control'] = {
@@ -183,37 +182,37 @@
 -- ============================================
 
 -- Consoles de jeux
-['ps5_console'] = {
-    label = 'PlayStation 5',
+['game_console'] = {
+    label = 'Console de jeux',
     weight = 4500,
     stack = false,
     close = true,
-    description = 'Console de jeux PlayStation 5'
+    description = 'Une console de jeux vidéo'
 },
 
-['ps4_console'] = {
-    label = 'PlayStation 4',
-    weight = 3800,
-    stack = false,
-    close = true,
-    description = 'Console de jeux PlayStation 4'
-},
-
-['xbox_console'] = {
-    label = 'Xbox',
+['game_console_pro'] = {
+    label = 'Console de jeux Pro',
     weight = 4200,
     stack = false,
     close = true,
-    description = 'Console de jeux Xbox'
+    description = 'Une console de jeux haut de gamme'
+},
+
+['retro_console'] = {
+    label = 'Console rétro',
+    weight = 3800,
+    stack = false,
+    close = true,
+    description = 'Une console de jeux rétro'
 },
 
 -- Informatique
-['macbook'] = {
-    label = 'MacBook',
+['laptop'] = {
+    label = 'Ordinateur portable',
     weight = 5500,
     stack = false,
     close = true,
-    description = 'Ordinateur portable MacBook'
+    description = 'Un ordinateur portable'
 },
 
 ['gaming_setup'] = {
@@ -221,41 +220,41 @@
     weight = 12000,
     stack = false,
     close = true,
-    description = 'Setup gaming complet avec écrans'
+    description = 'Un setup gaming complet avec écrans'
 },
 
--- Articles de luxe lourds
-['lv_bag_large'] = {
-    label = 'Grand Sac Louis Vuitton',
+-- Sacs et bagages
+['travel_bag'] = {
+    label = 'Sac de voyage',
     weight = 6000,
     stack = false,
     close = true,
-    description = 'Un grand sac de voyage Louis Vuitton'
+    description = 'Un grand sac de voyage'
 },
 
-['gucci_bag'] = {
-    label = 'Sac Gucci',
+['sport_bag'] = {
+    label = 'Sac de sport',
     weight = 5500,
     stack = false,
     close = true,
-    description = 'Un sac Gucci de luxe'
+    description = 'Un sac de sport'
 },
 
--- Objets de collection
-['kaws_statue'] = {
-    label = 'Statue Kaws',
+-- Objets de décoration
+['sculpture'] = {
+    label = 'Sculpture',
     weight = 8000,
     stack = false,
     close = true,
-    description = 'Une grande statue de collection Kaws'
+    description = 'Une sculpture de valeur'
 },
 
-['designer_rug'] = {
-    label = 'Tapis Designer',
+['carpet'] = {
+    label = 'Tapis',
     weight = 7000,
     stack = false,
     close = true,
-    description = 'Un tapis de créateur de luxe'
+    description = 'Un tapis de qualité'
 },
 
 -- Note: L'argent sale (black_money) est géré par ESX et n'a pas besoin d'être ajouté ici
