@@ -70,11 +70,11 @@ RegisterNetEvent('zcambu:collectItem', function(robberyType, propIndex)
     local location = Config.Locations[robbery.locationIndex]
     local prop = location.props[robberyType][propIndex]
 
-    if not prop or prop.heavy then
+    if not prop then
         return
     end
 
-    -- Donner la récompense
+    -- Donner la récompense (léger OU lourd)
     local amount = math.random(prop.amount[1], prop.amount[2])
 
     if prop.reward == 'black_money' then
@@ -88,36 +88,11 @@ RegisterNetEvent('zcambu:collectItem', function(robberyType, propIndex)
 
     -- Log
     if Config.Debug then
-        print(string.format('[ZCAMBU] %s a collecté %dx %s', xPlayer.getName(), amount, prop.reward))
+        local heavyText = prop.heavy and ' (LOURD)' or ''
+        print(string.format('[ZCAMBU] %s a collecté %dx %s%s', xPlayer.getName(), amount, prop.reward, heavyText))
     end
 end)
 
--- Event pour déposer un objet lourd
-RegisterNetEvent('zcambu:depositHeavyItem', function(propData)
-    local source = source
-    local xPlayer = ESX.GetPlayerFromId(source)
-
-    if not xPlayer or not activeRobberies[source] then
-        return
-    end
-
-    -- Donner la récompense
-    local amount = math.random(propData.amount[1], propData.amount[2])
-
-    if propData.reward == 'black_money' then
-        local account = xPlayer.getAccount('black_money')
-        if account then
-            xPlayer.addAccountMoney('black_money', amount)
-        end
-    else
-        exports.ox_inventory:AddItem(source, propData.reward, amount)
-    end
-
-    -- Log
-    if Config.Debug then
-        print(string.format('[ZCAMBU] %s a déposé %dx %s (objet lourd)', xPlayer.getName(), amount, propData.reward))
-    end
-end)
 
 -- Event pour terminer le braquage
 RegisterNetEvent('zcambu:endRobbery', function()

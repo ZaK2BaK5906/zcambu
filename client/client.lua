@@ -187,11 +187,12 @@ function CollectProp(locationIndex, robberyType, propIndex, propObj, propData)
         collectedProps[propIndex].collected = true
 
         if propData.heavy then
-            -- Objet lourd : le joueur doit le porter
+            -- Objet lourd : animation + inventaire + restrictions
             AttachHeavyObject(propData)
+            TriggerServerEvent('zcambu:collectItem', robberyType, propIndex)
             lib.notify({
                 title = 'Objet lourd',
-                description = Config.Locales['put_in_trunk'],
+                description = 'Objet lourd récupéré ! Mettez-le dans un coffre de véhicule',
                 type = 'warning'
             })
         else
@@ -233,39 +234,6 @@ function AttachHeavyObject(propData)
     -- Réduire la vitesse de marche
     SetPedMoveRateOverride(playerPed, Config.HeavyObjectSpeed.walkSpeed)
 
-    -- Ajouter ox_target sur les véhicules pour déposer
-    CreateThread(function()
-        while carryingObject do
-            Wait(1000)
-            local coords = GetEntityCoords(playerPed)
-            local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
-
-            for _, vehicle in pairs(vehicles) do
-                local vehNetId = NetworkGetNetworkIdFromEntity(vehicle.vehicle)
-
-                -- Ajouter target seulement si pas déjà ajouté
-                exports.ox_target:addLocalEntity(vehicle.vehicle, {
-                    {
-                        name = 'deposit_heavy_item_' .. vehNetId,
-                        label = 'Déposer dans le coffre',
-                        icon = 'fas fa-box',
-                        distance = 3.0,
-                        onSelect = function()
-                            DepositHeavyObject(vehicle.vehicle)
-                        end
-                    }
-                })
-            end
-        end
-
-        -- Nettoyer les targets quand on ne porte plus rien
-        local coords = GetEntityCoords(playerPed)
-        local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
-        for _, vehicle in pairs(vehicles) do
-            exports.ox_target:removeLocalEntity(vehicle.vehicle, 'deposit_heavy_item_' .. NetworkGetNetworkIdFromEntity(vehicle.vehicle))
-        end
-    end)
-
     -- Thread pour empêcher certaines actions
     CreateThread(function()
         while carryingObject do
@@ -290,55 +258,6 @@ function AttachHeavyObject(propData)
     end)
 end
 
--- Fonction pour déposer un objet lourd dans le coffre
-function DepositHeavyObject(vehicle)
-    if not carryingObject then return end
-
-    local playerPed = PlayerPedId()
-
-    -- Animation de dépôt
-    if lib.progressBar({
-        duration = 2000,
-        label = 'Dépôt dans le coffre...',
-        useWhileDead = false,
-        canCancel = true,
-        disable = {
-            move = true,
-            car = true,
-            combat = true
-        }
-    }) then
-        -- Détacher et supprimer le prop
-        if DoesEntityExist(carryingProp) then
-            DetachEntity(carryingProp, true, true)
-            DeleteObject(carryingProp)
-        end
-        carryingProp = nil
-
-        -- Réinitialiser la vitesse
-        SetPedMoveRateOverride(playerPed, 1.0)
-        ClearPedTasks(playerPed)
-
-        -- Donner la récompense
-        TriggerServerEvent('zcambu:depositHeavyItem', carryingObject)
-
-        -- Nettoyer les targets
-        local coords = GetEntityCoords(playerPed)
-        local vehicles = lib.getNearbyVehicles(coords, 10.0, true)
-        for _, veh in pairs(vehicles) do
-            exports.ox_target:removeLocalEntity(veh.vehicle, 'deposit_heavy_item_' .. NetworkGetNetworkIdFromEntity(veh.vehicle))
-        end
-
-        carryingObject = nil
-
-        lib.notify({
-            title = 'Déposé',
-            description = 'Objet déposé dans le coffre',
-            type = 'success'
-        })
-    end
-end
-
 -- Fonction pour créer la zone de sortie
 function CreateExitZone(locationIndex)
     local location = Config.Locations[locationIndex]
@@ -359,18 +278,6 @@ function CreateExitZone(locationIndex)
         nearby = function()
             if IsControlJustPressed(0, 38) then -- E
                 ExitRobbery(locationIndex)
-            end
-
-            -- Option pour déposer l'objet lourd
-            if carryingObject then
-                if IsControlJustPressed(0, 47) then -- G
-                    DepositHeavyObject()
-                end
-
-                lib.showTextUI('[E] Sortir | [G] Déposer dans le coffre', {
-                    position = 'left-center',
-                    icon = 'door-open'
-                })
             end
         end
     })
@@ -397,19 +304,7 @@ function ExitRobbery(locationIndex)
         ClearPedTasks(playerPed)
         ClearPedSecondaryTask(playerPed)
 
-        -- Nettoyer les targets de véhicules
-        local coords = GetEntityCoords(playerPed)
-        local vehicles = lib.getNearbyVehicles(coords, 20.0, true)
-        for _, veh in pairs(vehicles) do
-            local vehNetId = NetworkGetNetworkIdFromEntity(veh.vehicle)
-            pcall(function()
-                exports.ox_target:removeLocalEntity(veh.vehicle, 'deposit_heavy_item_' .. vehNetId)
-            end)
-        end
-
-        -- Donner l'objet au joueur automatiquement
-        TriggerServerEvent('zcambu:depositHeavyItem', carryingObject)
-
+        -- L'objet est déjà dans l'inventaire, on nettoie juste les variables
         carryingObject = nil
         carryingProp = nil
     end
@@ -480,18 +375,6 @@ CreateThread(function()
     end
 end)
 
--- Commande pour déposer un objet lourd (alternative)
-RegisterCommand('deposer', function()
-    if carryingObject then
-        DepositHeavyObject()
-    else
-        lib.notify({
-            title = 'Erreur',
-            description = 'Vous ne portez aucun objet',
-            type = 'error'
-        })
-    end
-end, false)
 
 -- Nettoyage à la déconnexion
 AddEventHandler('onResourceStop', function(resourceName)
